@@ -1,0 +1,66 @@
+{
+  "stages":[
+    {
+      "type": "dom",
+      "input_mapping": {
+        "option_element": "/_body"
+      },
+      "output_fields": {
+        "option_element": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html_include",
+              "selector": "select[name=\"prefix_id\"] > option"
+            }
+          ],
+          "is_flatten": true,
+          "collect_as": {
+            "type": "array",
+            "data_type": "html_element",
+            "default_value": []
+          }
+        }
+      },
+      "exclude_mapping": [
+        "/_body"
+      ]
+    },
+    {
+      "type": "dom",
+      "input_mapping": {
+        "prefix_id": "/option_element",
+        "name": "/option_element"
+      },
+      "output_fields": {
+        "prefix_id": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html",
+              "collectors": ["${@value}"]
+            },
+            {
+              "type": "string_trim"
+            }
+          ]
+        },
+        "name": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html",
+              "collectors": ["${text()}"]
+            },
+            {
+              "type": "string_trim"
+            }
+          ]
+        }
+      },
+      "exclude_mapping": [
+        "/option_element"
+      ]
+    }
+  ]
+}

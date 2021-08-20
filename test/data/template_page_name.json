@@ -1,0 +1,28 @@
+{
+  "stages":[
+    {
+      "type": "dom",
+      "input_mapping": {
+        "page_name": "/_body"
+      },
+      "output_fields": {
+        "page_name": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html",
+              "selector": "div[class*=\"p-body-header\"] h1[class*=\"p-title-value\"]",
+              "collectors": ["${text()}"]
+            },
+            {
+              "type": "string_trim"
+            }
+          ]
+        }
+      },
+      "exclude_mapping": [
+        "/_body"
+      ]
+    }
+  ]
+}

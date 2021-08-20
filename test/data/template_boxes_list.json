@@ -1,0 +1,200 @@
+{
+  "stages":[
+    {
+      "type": "dom",
+      "input_mapping": {
+        "html_box_group": "/_body"
+      },
+      "output_fields": {
+        "html_box_group": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html_include",
+              "selector": "div[class*=\"block-container\"]"
+            }
+          ],
+          "is_flatten": true,
+          "collect_as": {
+            "type": "distinct_array",
+            "data_type": "html_element"
+          }
+        }
+      },
+      "exclude_mapping": [
+        "/_body"
+      ]
+    },
+
+    {
+      "type": "dom",
+      "input_mapping": {
+        "group": "/html_box_group",
+        "html_box": "/html_box_group"
+      },
+      "output_fields": {
+
+        "group": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html",
+              "selector": "h2[class*=block-header]",
+              "collectors": ["${text()}"]
+            },
+            {
+              "type": "string_trim"
+            }
+          ],
+          "collect_as": {
+            "type": "first",
+            "data_type": "string",
+            "default_value": ""
+          }
+        },
+        "html_box": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html_include",
+              "selector": "div[class*=\"node--id\"] > div[class*=\"node-body\"]"
+            }
+          ],
+          "is_flatten": true,
+          "collect_as": {
+            "type": "distinct_array",
+            "data_type": "html_element"
+          }
+        }
+      },
+      "exclude_mapping": [
+        "/html_box_group"
+      ]
+    },
+    {
+      "type": "dom",
+      "input_mapping": {
+        "is_virtual_box": "/html_box",
+        "is_watched": "/html_box",
+        "box_id": "/html_box",
+        "title": "/html_box",
+        "thread_count": "/html_box",
+        "posts_count": "/html_box"
+      },
+      "output_fields": {
+        "is_virtual_box": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html_include",
+              "selector": "*[class*=\"node-title\"]"
+            },
+            {
+              "type": "html_include",
+              "selector": "a[href*=\"/link-forums/\"]"
+            },
+            {
+              "type": "is_not_null"
+            }
+          ],
+          "collect_as": {
+            "type": "first",
+            "data_type": "bool",
+            "default_value": false
+          }
+        },
+        "is_watched": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html_include",
+              "selector": "*[class*=\"status--watched\"]"
+            },
+            {
+              "type": "is_not_null"
+            }
+          ],
+          "collect_as": {
+            "type": "first",
+            "data_type": "bool",
+            "default_value": false
+          }
+        },
+        "box_id": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html",
+              "selector": "*[class*=\"node-title\"] a[href*=\"/f/\"], *[class*=\"node-title\"] a[href*=\"/link-forums/\"]",
+              "collectors": ["${@href}"]
+            },
+            {
+              "type": "regex",
+              "selectors": ["/((f)|(link-forums))/(.+)\\.(?<box_id>\\d+)/"],
+              "output_group": "box_id"
+            }
+          ]
+        },
+        "title": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html_include",
+              "selector": "*[class*=\"node-title\"]"
+            },
+            {
+              "type": "html",
+              "selector": "a[href*=\"/f/\"], a[href*=\"/link-forums/\"]",
+              "collectors": [
+                "${text()}"
+              ]
+            }
+          ]
+        },
+        "thread_count": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html",
+              "selector": "div[class*=\"node-statsMeta\"] dl[class*=pairs] > dd",
+              "collectors": ["${text()}"]
+            },
+            {
+              "type": "regex_replace",
+              "selectors": [","],
+              "replacement": ""
+            }
+          ],
+          "collect_as": {
+            "type": "first",
+            "output_type": "string",
+            "default_value": "0"
+          }
+        },
+        "posts_count": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html",
+              "selector": "div[class*=\"node-statsMeta\"] dl[class*=pairs] > dd",
+              "collectors": ["${text()}"]
+            },
+            {
+              "type": "regex_replace",
+              "selectors": [","],
+              "replacement": ""
+            }
+          ],
+          "collect_as": {
+            "type": "last",
+            "data_type": "string",
+            "default_value": "0"
+          }
+        }
+      },
+      "exclude_mapping": [
+        "/html_box"
+      ]
+    }
+  ]
+}

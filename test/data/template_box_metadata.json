@@ -1,0 +1,116 @@
+{
+  "stages":[
+    {
+      "type": "dom",
+      "input_mapping": {
+        "url": "/_body",
+        "is_watched": "/_body",
+        "page_name": "/_body",
+        "current_page": "/_body",
+        "total_page_count": "/_body",
+        "popup_message": "/_body"
+      },
+      "output_fields": {
+        "is_watched": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html",
+              "selector": "a[data-sk-unwatch]",
+              "collectors": [
+                "${text()}"
+              ]
+            },
+            {
+              "type": "string_trim"
+            },
+            {
+              "type": "regex_replace",
+              "selectors": ["^Unwatch$"],
+              "replacement": "true"
+            }
+          ],
+          "collect_as": {
+            "type": "first",
+            "data_type": "bool",
+            "default_value": false
+          }
+        },
+        "page_name": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html",
+              "selector": "div[class*=\"p-body-header\"] h1[class*=\"p-title-value\"]",
+              "collectors": ["${text()}"]
+            },
+            {
+              "type": "string_trim"
+            }
+          ]
+        },
+        "current_page": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html",
+              "selector": "ul[class*=\"pageNav-main\"] > li[class*=\"pageNav-page--current\"] > a[href*=\"page\"]",
+              "collectors": ["${@href}"]
+            },
+            {
+              "type": "regex",
+              "selectors": ["page-(?<page_count>\\d+)", "page=(?<page_count>\\d+)"],
+              "output_group": "page_count"
+            }
+          ],
+          "collect_as": {
+            "type": "first",
+            "data_type": "int",
+            "default_value": 1
+          }
+        },
+        "total_page_count": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html_include",
+              "selector": "ul[class*=\"pageNav-main\"] > li[class*=\"pageNav-page\"]:last-child"
+            },
+            {
+              "type": "html",
+              "selector": "a[href*=\"/page-\"], a[href*=\"page=\"]",
+              "collectors": ["${@href}"]
+            },
+            {
+              "type": "regex",
+              "selectors": ["page-(?<page_count>\\d+)", "page=(?<page_count>\\d+)"],
+              "output_group": "page_count"
+            }
+          ],
+          "collect_as": {
+            "type": "last",
+            "data_type": "int",
+            "default_value": 0
+          }
+        },
+        "popup_message": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html",
+              "selector": "div[role*=\"alertdialog\"] div[class*=\"blockMessage\"]",
+              "collectors": ["${text()}"]
+            },
+            {
+              "type": "string_trim"
+            }
+          ]
+        }
+
+      },
+      "exclude_mapping": [
+        "/_body"
+      ]
+    }
+  ]
+}

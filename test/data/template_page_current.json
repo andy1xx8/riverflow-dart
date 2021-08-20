@@ -1,0 +1,35 @@
+{
+  "stages":[
+    {
+      "type": "dom",
+      "input_mapping": {
+        "current_page": "/_body"
+      },
+      "output_fields": {
+        "current_page": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html",
+              "selector": "ul[class*=\"pageNav-main\"] > li[class*=\"pageNav-page--current\"] > a[href*=\"page\"]",
+              "collectors": ["${@href}"]
+            },
+            {
+              "type": "regex",
+              "selectors": ["page-(?<page_count>\\d+)", "page=(?<page_count>\\d+)"],
+              "output_group": "page_count"
+            }
+          ],
+          "collect_as": {
+            "type": "first",
+            "data_type": "int",
+            "default_value": 1
+          }
+        }
+      },
+      "exclude_mapping": [
+        "/_body"
+      ]
+    }
+  ]
+}

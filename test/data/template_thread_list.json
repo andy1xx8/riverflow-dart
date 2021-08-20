@@ -1,0 +1,407 @@
+{
+  "stages":[
+    {
+      "type": "dom",
+      "input_mapping": {
+        "thread_html": "/_body"
+      },
+      "output_fields": {
+        "thread_html": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html_include",
+              "selector": "div[class*=threadListItem]"
+            }
+          ],
+          "is_flatten": true,
+          "collect_as": {
+            "type": "array",
+            "data_type": "html_element"
+          }
+        }
+      },
+      "exclude_mapping": [
+        "/_body"
+      ]
+    },
+    {
+      "type": "dom",
+      "input_mapping": {
+        "is_sticky": "/thread_html",
+        "is_lock": "/thread_html",
+        "is_unread": "/thread_html",
+        "is_ignored": "/thread_html",
+        "is_watched": "/thread_html",
+        "has_poll": "/thread_html",
+        "prefix": "/thread_html",
+        "thread_id": "/thread_html",
+        "title": "/thread_html",
+        "thread_count": "/thread_html",
+        "view_count": "/thread_html",
+        "total_page_count": "/thread_html",
+        "created_at": "/thread_html",
+        "created_at_ts": "/thread_html",
+        "parent_boxes": "/thread_html",
+        "creator_avatar": "/thread_html",
+        "html_creator": "/thread_html"
+      },
+      "output_fields": {
+        "is_sticky": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html",
+              "selector": "*[class*=\"sticky\"]",
+              "collectors": [
+                "${@title}"
+              ]
+            },
+            {
+              "type": "regex_replace",
+              "selectors": ["^Sticky$"],
+              "replacement": "true"
+            }
+          ],
+          "collect_as": {
+            "type": "first",
+            "data_type": "bool",
+            "default_value": false
+          }
+        },
+        "is_lock": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html",
+              "selector": "*[class*=\"locked\"]",
+              "collectors": [
+                "${@title}"
+              ]
+            },
+            {
+              "type": "regex_replace",
+              "selectors": ["^Locked$"],
+              "replacement": "true"
+            }
+          ],
+          "collect_as": {
+            "type": "first",
+            "data_type": "bool",
+            "default_value": false
+          }
+        },
+        "is_unread": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html",
+              "selector": "div[class*=structItem-title] a[href*=\"/threads/\"],div[class*=structItem-title] a[href*=\"/t/\"]",
+              "collectors": ["${@href}"]
+            },
+            {
+              "type": "regex",
+              "selectors": ["/(?<is_unread>unread)"],
+              "output_group": "is_unread"
+            },
+            {
+              "type": "is_not_null"
+            }
+          ],
+          "collect_as": {
+            "type": "first",
+            "data_type": "bool",
+            "default_value": false
+          }
+        },
+        "is_ignored": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html_include",
+              "selector": "*[class*=\"is-ignored\"]"
+            },
+            {
+              "type": "is_not_null"
+            }
+          ],
+          "collect_as": {
+            "type": "first",
+            "data_type": "bool",
+            "default_value": false
+          }
+        },
+        "is_watched": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html_include",
+              "selector": "*[class*=\"status--watched\"]"
+            },
+            {
+              "type": "is_not_null"
+            }
+          ],
+          "collect_as": {
+            "type": "first",
+            "data_type": "bool",
+            "default_value": false
+          }
+        },
+        "has_poll": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html_include",
+              "selector": "*[class*=\"status--poll\"]"
+            },
+            {
+              "type": "is_not_null"
+            }
+          ],
+          "collect_as": {
+            "type": "first",
+            "data_type": "bool",
+            "default_value": false
+          }
+        },
+        "prefix": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html",
+              "selector": "a > span[class*=label]",
+              "collectors": [
+                "${text()}"
+              ]
+            },
+            {
+              "type": "string_trim"
+            }
+          ],
+          "collect_as": {
+            "type": "distinct_array",
+            "data_type": "string"
+          }
+        },
+        "thread_id": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html",
+              "selector": "a[href*=\"/threads/\"], a[href*=\"/t/\"]",
+              "collectors": ["${@href}"]
+            },
+            {
+              "type": "regex",
+              "selectors": ["/t(hreads)?/(.+)\\.(?<thread_id>\\d+)/"],
+              "output_group": "thread_id"
+            }
+          ]
+        },
+        "title": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html",
+              "selector": "div[class*=structItem-title] a[href*=\"/threads/\"], div[class*=structItem-title] a[href*=\"/t/\"]",
+              "collectors": [
+                "${text()}"
+              ]
+            }
+          ]
+        },
+        "thread_count": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html",
+              "selector": "div[class*=\"structItem-cell--meta\"] > [class*=pairs] > dd",
+              "collectors": ["${text()}"]
+            },
+            {
+              "type": "regex_replace",
+              "selectors": [","],
+              "replacement": ""
+            }
+          ],
+          "collect_as": {
+            "type": "first",
+            "output_type": "string",
+            "default_value": "0"
+          }
+        },
+        "view_count": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html",
+              "selector": "div[class*=\"structItem-cell--meta\"] > [class*=pairs] > dd",
+              "collectors": ["${text()}"]
+            },
+            {
+              "type": "regex_replace",
+              "selectors": [","],
+              "replacement": ""
+            }
+          ],
+          "collect_as": {
+            "type": "last",
+            "output_type": "string",
+            "default_value": "0"
+          }
+        },
+        "total_page_count": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html",
+              "selector": "div[class*=\"structItem-cell--main\"] *[class*=\"structItem-pageJump\"] a[href*=\"/threads/\"][href*=\"/page-\"]:last-child, div[class*=\"structItem-cell--main\"] *[class*=\"structItem-pageJump\"] a[href*=\"/t/\"][href*=\"/page-\"]:last-child",
+              "collectors": ["${@href}"]
+            },
+            {
+              "type": "regex",
+              "selectors": ["page-(?<page_count>\\d+)"],
+              "output_group": "page_count"
+            }
+          ],
+          "collect_as": {
+            "type": "last",
+            "data_type": "int",
+            "default_value": 1
+          }
+        },
+        "created_at": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html",
+              "selector": "div[class*=\"structItem-cell--main\"] li[class*=startDate] > a > time",
+              "collectors": ["${text()}"]
+            },
+            {
+              "type": "string_trim"
+            }
+          ]
+        },
+        "created_at_ts": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html",
+              "selector": "div[class*=\"structItem-cell--main\"] li[class*=startDate] > a > time",
+              "collectors": ["${@data-time}"]
+            },
+            {
+              "type": "string_trim"
+            },
+            {
+              "type": "regex_replace",
+              "selectors": ["$"],
+              "replacement": "000"
+            }
+          ],
+          "collect_as": {
+            "type": "first",
+            "data_type": "long"
+          }
+        },
+        "parent_boxes": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html",
+              "selector": "*[class*=\"structItem-parts\"] a[href*=\"/f/\"], *[class*=\"structItem-parts\"] a[href*=\"/link-forums/\"]",
+              "collectors": ["${text()}"]
+            },
+            {
+              "type": "string_trim"
+            }
+          ],
+          "collect_as": {
+            "type": "distinct_array",
+            "data_type": "string",
+            "default_value": []
+          }
+        },
+        "creator_avatar": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html",
+              "selector": "div[class$=\"structItem-cell--icon\"] img[src*=\"/avatars/\"]",
+              "collectors": ["${@src}"]
+            }
+          ]
+        },
+        "html_creator": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html_include",
+              "selector": "ul[class*=\"structItem-parts\"]"
+            }
+          ]
+        }
+      },
+      "exclude_mapping": [
+        "/thread_html"
+      ]
+    },
+    {
+      "type": "dom",
+      "input_mapping": {
+        "creator_id": "/html_creator",
+        "creator_username": "/html_creator",
+        "creator_name": "/html_creator"
+      },
+      "output_fields": {
+        "creator_id": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html",
+              "selector": "a[href*=\"/u/\"][class*=username], a[href*=\"/u/\"], a[href*=\"/authors/\"]",
+              "collectors": ["${@href}"]
+            },
+            {
+              "type": "regex",
+              "selectors": ["/(.+)\\.(?<creator_id>\\d+)/"],
+              "output_group": "creator_id"
+            }
+          ]
+        },
+        "creator_username": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html",
+              "selector": "a[href*=\"/u/\"][class*=username], a[href*=\"/u/\"], a[href*=\"/authors/\"]",
+              "collectors": ["${text()}"]
+            },
+            {
+              "type": "string_trim"
+            }
+          ]
+        },
+        "creator_name": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html",
+              "selector": "a[href*=\"/u/\"][class*=username], a[href*=\"/u/\"], a[href*=\"/authors/\"]",
+              "collectors": ["${text()}"]
+            },
+            {
+              "type": "string_trim"
+            }
+          ]
+        }
+
+      },
+      "exclude_mapping": [
+        "/html_creator"
+      ]
+    }
+  ]
+}

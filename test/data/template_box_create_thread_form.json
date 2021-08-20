@@ -1,0 +1,70 @@
+{
+  "stages":[
+    {
+      "type": "dom",
+      "input_mapping": {
+        "create_thread_form_element": "/_body"
+      },
+      "output_fields": {
+        "create_thread_form_element": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html_include",
+              "selector": "form[action*=\"/post-thread\"]"
+            },
+            {
+              "type": "html_include",
+              "selector": "input[name], textarea[name]"
+            }
+          ],
+          "is_flatten": true,
+          "collect_as": {
+            "type": "array",
+            "data_type": "html_element"
+          }
+        }
+
+      },
+      "exclude_mapping": [
+        "/_body"
+      ]
+    },
+    {
+      "type": "dom",
+      "input_mapping": {
+        "name": "/create_thread_form_element",
+        "value": "/create_thread_form_element"
+      },
+      "output_fields": {
+        "name": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html",
+              "collectors": ["${@name}"]
+            }
+          ]
+        },
+        "value": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html",
+              "collectors": ["${@value}", "${text()}"]
+            }
+          ],
+          "collect_as": {
+            "type": "first",
+            "data_type": "string",
+            "default_value": ""
+          }
+        }
+
+      },
+      "exclude_mapping": [
+        "/create_thread_form_element"
+      ]
+    }
+  ]
+}

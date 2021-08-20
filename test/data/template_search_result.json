@@ -1,0 +1,67 @@
+{
+  "stages":[
+    {
+      "type": "dom",
+      "input_mapping": {
+        "html_search_result": "/_body"
+      },
+      "output_fields": {
+        "html_search_result": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html_include",
+              "selector": "li[class*=\"block-row\"][data-author]"
+            }
+          ],
+          "is_flatten": true,
+          "collect_as": {
+            "type": "array",
+            "data_type": "html_element",
+            "default_value": []
+          }
+        }
+      },
+      "exclude_mapping": [
+        "/_body"
+      ]
+    },
+    {
+      "type": "dom",
+      "input_mapping": {
+        "url": "/html_search_result",
+        "item_result_element": "/html_search_result"
+      },
+      "output_fields": {
+        "url": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html",
+              "selector": "div[class*=\"contentRow\"] a[href*=\"voz.vn/t/\"], div[class*=\"contentRow\"] a[href*=\"voz.vn/threads/\"]",
+              "collectors": ["${@href}"]
+            },
+            {
+              "type": "string_trim"
+            }
+          ]
+        },
+        "item_result_element": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html_include"
+            }
+          ],
+          "collect_as": {
+            "type": "first",
+            "data_type": "html_element"
+          }
+        }
+      },
+      "exclude_mapping": [
+        "/html_search_result"
+      ]
+    }
+  ]
+}

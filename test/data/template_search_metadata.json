@@ -1,0 +1,84 @@
+{
+  "stages":[
+    {
+      "type": "dom",
+      "input_mapping": {
+        "search_id": "/_body",
+        "current_page": "/_body",
+        "total_page_count": "/_body"
+      },
+      "output_fields": {
+        "search_id": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html",
+              "selector": "meta[property=\"og:url\"]",
+              "collectors": ["${@content}"]
+            },
+            {
+              "type": "string_trim"
+            },
+            {
+              "type": "regex",
+              "selectors": ["/search/(?<search_id>\\d+)/?"],
+              "output_group": "search_id"
+            }
+          ],
+          "collect_as": {
+            "type": "first",
+            "data_type": "int",
+            "default_value": 1
+          }
+        },
+        "current_page": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html",
+              "selector": "ul[class*=\"pageNav-main\"] > li[class*=\"pageNav-page--current\"] > a[href*=\"page\"]",
+              "collectors": ["${@href}"]
+            },
+            {
+              "type": "regex",
+              "selectors": ["page-(?<page_count>\\d+)", "page=(?<page_count>\\d+)"],
+              "output_group": "page_count"
+            }
+          ],
+          "collect_as": {
+            "type": "first",
+            "data_type": "int",
+            "default_value": 1
+          }
+        },
+        "total_page_count": {
+          "type": "field_selector",
+          "extractors": [
+            {
+              "type": "html_include",
+              "selector": "ul[class*=\"pageNav-main\"] > li[class*=\"pageNav-page\"]:last-child"
+            },
+            {
+              "type": "html",
+              "selector": "a[href*=\"/page-\"], a[href*=\"page=\"]",
+              "collectors": ["${@href}"]
+            },
+            {
+              "type": "regex",
+              "selectors": ["page-(?<page_count>\\d+)", "page=(?<page_count>\\d+)"],
+              "output_group": "page_count"
+            }
+          ],
+          "collect_as": {
+            "type": "last",
+            "data_type": "int",
+            "default_value": 0
+          }
+        }
+      },
+      "exclude_mapping": [
+        "/_body"
+      ]
+    }
+  ]
+}
