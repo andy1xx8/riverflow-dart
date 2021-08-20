@@ -16,8 +16,6 @@ abstract class Stage {
 
   List<Record> process(Record inputRecord);
 
-  Map<String, dynamic> toJson();
-
   factory Stage.fromJson(Map<String, dynamic> json) {
     final type = json['type'];
     if (type == null) {
@@ -29,5 +27,11 @@ abstract class Stage {
       default:
         throw UnsupportedError('Unknown Barrage Type: $type');
     }
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'type': type,
+    };
   }
 }

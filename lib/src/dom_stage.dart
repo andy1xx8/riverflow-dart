@@ -1,5 +1,4 @@
 import 'package:riverflow/src/domain/record.dart';
-import 'package:riverflow/src/extractors/filter.dart';
 import 'package:riverflow/src/selector/field_selector.dart';
 import 'package:riverflow/src/stage.dart';
 
@@ -7,13 +6,11 @@ class DomStage extends Stage {
   final Map<String, String> inputMapping;
   final Map<String, Selector> outputFields;
   final Set<String> excludeMapping;
-  final Filter filter;
 
   DomStage({
     this.inputMapping,
     this.outputFields,
     this.excludeMapping,
-    this.filter,
   }) : super(StageTypes.DOM);
 
   @override
@@ -83,17 +80,17 @@ class DomStage extends Stage {
       excludeMapping: json['exclude_mapping'] != null
           ? json['exclude_mapping'].map<String>((e) => e.toString()).toSet()
           : <String>{},
-      filter: json['filter'] != null ? Filter.fromJson(json['filter']) : null,
     );
   }
 
   @override
   Map<String, dynamic> toJson() {
+    var json = super.toJson();
     return {
+      ...json,
       'input_mapping': inputMapping,
       'output_fields': outputFields.map((key, value) => MapEntry(key, value.toJson())),
       'exclude_mapping': excludeMapping?.toList(),
-      'filter': filter?.toJson(),
     };
   }
 }
