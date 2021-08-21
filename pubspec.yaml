@@ -1,6 +1,6 @@
 name: riverflow
 description: A library to parse, extract and/or ETL data from difference sources. such as HTML document.
-version: 1.0.2
+version: 1.0.4
 homepage: https://github.com/andy1xx8/riverflow-dart
 repository: https://github.com/andy1xx8/riverflow-dart
 
@@ -15,6 +15,7 @@ dependencies:
   dolumns: ^1.2.0
 
 dev_dependencies:
+  http: ^0.12.2
   pedantic: ^1.9.0
   test: ^1.14.4
   resource: ^2.1.7

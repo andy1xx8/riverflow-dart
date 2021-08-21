@@ -19,20 +19,20 @@ class TemplateTester {
 
   Future<List<Record>> test() async {
     await fetch();
-    final flow = WebFlow(template.stages);
-    return flow.startFloating([dom.documentElement]);
+    final flow = WebFlow(template);
+    return flow.start([dom.documentElement]);
   }
 
   Future<List<Record>> testHtml(String html, String baseUrl) async {
     await _loadTemplate();
-    final flow = WebFlow(template.stages);
-    return flow.startFloating([html.asDocument(baseUrl).documentElement]);
+    final flow = WebFlow(template);
+    return flow.start([html.asDocument(baseUrl).documentElement]);
   }
 
   Future<List<Record>> testDocument(Document doc) async {
     await _loadTemplate();
-    final flow = WebFlow(template.stages);
-    return flow.startFloating([doc.documentElement]);
+    final flow = WebFlow(template);
+    return flow.start([doc.documentElement]);
   }
 
   Future _loadTemplate() async {

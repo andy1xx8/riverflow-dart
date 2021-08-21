@@ -72,12 +72,12 @@ void main() async {
     },
   );
 
-  final flow = WebFlow([stage1, stage2]);
+  final flow = WebFlow(Template([stage1, stage2]));
 
   final response = await http.get('https://pub.dev/flutter/favorites');
   final html = response.body;
 
-  var records = flow.startFloating([html.asDocument('https://pub.dev').documentElement]);
+  var records = flow.start([html.asDocument('https://pub.dev').documentElement]);
 
   records.forEach((record) {
     print(jsonEncode(record.toJson()));

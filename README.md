@@ -230,7 +230,7 @@ final template = Template([stage1, stage2]);
 2. Create a WebFlow
 
 ```dart
-final flow = WebFlow(template.stages);
+final flow = WebFlow(template);
 ```
 
 3. Download a web page and build a document

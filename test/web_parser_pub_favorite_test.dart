@@ -83,9 +83,9 @@ void main() {
       },
     );
 
-    var flow = WebFlow([stage1, stage2]);
+    var flow = WebFlow(Template([stage1, stage2]));
 
-    var records = flow.startFloating([html.asDocument('https://pub.dev').documentElement]);
+    var records = flow.start([html.asDocument('https://pub.dev').documentElement]);
     expect(records, isNotEmpty);
     expect(records[0], isNotNull);
 
