@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:riverflow/riverflow.dart';
 import 'package:riverflow/src/stage.dart';
 
+/// Flow Template
 class Template {
+  /// Stages for this template
   final List<Stage> stages;
 
   Template(this.stages);

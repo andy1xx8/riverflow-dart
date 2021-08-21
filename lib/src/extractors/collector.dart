@@ -133,8 +133,11 @@ abstract class Collector<T> {
 }
 
 class DefaultCollector extends Collector<dynamic> {
-  const DefaultCollector(String collectAs, String outputType, dynamic defaultValue)
-      : super(collectAs, outputType, defaultValue);
+  const DefaultCollector(
+    String collectAs,
+    String outputType,
+    dynamic defaultValue,
+  ) : super(collectAs, outputType, defaultValue);
 
   @override
   dynamic collectOutput(dynamic input) {
@@ -148,8 +151,11 @@ class DefaultCollector extends Collector<dynamic> {
 }
 
 class ExtractorCollector extends Collector<List> {
-  const ExtractorCollector(String collectAs, String outputType, dynamic defaultValue)
-      : super(collectAs, outputType, defaultValue);
+  const ExtractorCollector(
+    String collectAs,
+    String outputType,
+    dynamic defaultValue,
+  ) : super(collectAs, outputType, defaultValue);
 
   @override
   List collectOutput(input) {

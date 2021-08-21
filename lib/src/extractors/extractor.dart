@@ -9,11 +9,68 @@ import 'package:riverflow/src/extractors/regex_extractor.dart';
 import 'package:riverflow/src/extractors/string_extractor.dart';
 import 'package:riverflow/src/extractors/switchcase_extractor.dart';
 
+/// Subclasses of this class implement different kinds of extractors.
+/// The most common kinds of extractors are:
+///
+/// * HtmlExtractor.
+///   An extractor to select a html element, document or event a html string
+///   and then extract desire data by using CSS-Selector syntax.
+///
+/// * HtmlIncludeExtractor.
+///   An extractor to select element from a html element, document or event a html string
+///   by using CSS-Selector syntax.
+///
+/// * HtmlExcludeExtractor.
+///   An extractor to exclude element from a html element, document or event a html string
+///   by using CSS-Selector syntax.
+///
+/// * HtmlAttributeEditor.
+///   An extractor to change HTML's tag attributes of a html element, document or event a html string
+///   by using CSS-Selector syntax.
+///
+/// * HtmlRenameExtractor.
+///   An extractor to rename HTML's tag
+///
+/// * HtmlDecoderExtractor.
+///   Decode HTML special characters.
+///
+/// * NotNullExtractor.
+///   An extractor to check if an element is NULL.
+///
+/// * RegexExtractor.
+///   An extractor to extract data using Regular Expression.
+///
+/// * RegexReplaceExtractor.
+///   An extractor to replace a string using Regular Expression.
+///
+/// * StringTrimExtractor.
+///   An extractor to trim a string.
+///
+/// * StringRemoveEmptyExtractor.
+///   An extractor to remove all NULL and empty string.
+///
+/// * StringSplitterExtractor.
+///   An extractor to split a string into a list.
+///
+/// * StringFilterExtractor.
+///   An extractor to filter out unnecessary items.
+///
+/// * SwitchCaseExtractor.
+///   An extractor to transform a value to others using switch-case expression.
+///
+/// * DateTimeExtractor.
+///   An extractor to extract a date time string to DateTime.
+///
+/// * EpochTimeExtractor.
+///   An extractor to convert date time to Unix epoch milliseconds.
 abstract class Extractor {
   final String type;
 
   Extractor(this.type);
 
+  /// Process `input` and extract necessary data.
+  ///
+  /// * Note: the output is usually passed to the next [extractor] in the chain.
   List<dynamic> extract(dynamic input);
 
   factory Extractor.fromJson(Map<String, dynamic> json) {
@@ -30,8 +87,6 @@ abstract class Extractor {
         return HtmlExcludeExtractor.fromJson(json);
       case ExtractorTypes.HTML_CHANGE_ATTRIBUTE:
         return HtmlAttributeEditor.fromJson(json);
-      case ExtractorTypes.HTML_TAG_REMOVAL:
-        return HtmlTextExtractor.fromJson(json);
       case ExtractorTypes.HTML_TAG_RENAME:
         return HtmlRenameExtractor.fromJson(json);
       case ExtractorTypes.HTML_DECODER:

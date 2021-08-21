@@ -214,20 +214,6 @@ class HtmlRenameExtractor extends Extractor {
   }
 }
 
-class HtmlTextExtractor extends Extractor {
-  HtmlTextExtractor() : super(ExtractorTypes.HTML_TAG_REMOVAL);
-
-  @override
-  List extract(dynamic input) {
-    final text = HtmlUtils.prepareInputElement(input).text.trim();
-    return [text];
-  }
-
-  factory HtmlTextExtractor.fromJson(Map<String, dynamic> json) {
-    return HtmlTextExtractor();
-  }
-}
-
 class HtmlDecoderExtractor extends Extractor {
   HtmlDecoderExtractor() : super(ExtractorTypes.HTML_DECODER);
 

@@ -45,35 +45,6 @@ class StringRemoveEmptyExtractor extends Extractor {
   }
 }
 
-class StringFilterExtractor extends Extractor {
-  final Filter filter;
-
-  StringFilterExtractor(this.filter) : super(ExtractorTypes.FILTER);
-
-  @override
-  List extract(input) {
-    final inputSource = prepareInputSource(input);
-
-    return [inputSource].where((element) => filter.isMatch(element)).toList();
-  }
-
-  factory StringFilterExtractor.fromJson(Map<String, dynamic> json) {
-    return StringFilterExtractor(
-      Filter.fromJson(json['filter']),
-    );
-  }
-
-  static String prepareInputSource(dynamic input) {
-    if (input is dom.Element) {
-      return input.outerHtml.trim();
-    } else if (input is String) {
-      return input.trim();
-    } else {
-      return input.toString().trim();
-    }
-  }
-}
-
 class StringSplitterExtractor extends Extractor {
   final String delimiter;
   final String collectType;
@@ -111,3 +82,33 @@ class StringSplitterExtractor extends Extractor {
     return json;
   }
 }
+
+class StringFilterExtractor extends Extractor {
+  final Filter filter;
+
+  StringFilterExtractor(this.filter) : super(ExtractorTypes.FILTER);
+
+  @override
+  List extract(input) {
+    final inputSource = prepareInputSource(input);
+
+    return [inputSource].where((element) => filter.isMatch(element)).toList();
+  }
+
+  factory StringFilterExtractor.fromJson(Map<String, dynamic> json) {
+    return StringFilterExtractor(
+      Filter.fromJson(json['filter']),
+    );
+  }
+
+  static String prepareInputSource(dynamic input) {
+    if (input is dom.Element) {
+      return input.outerHtml.trim();
+    } else if (input is String) {
+      return input.trim();
+    } else {
+      return input.toString().trim();
+    }
+  }
+}
+

@@ -1,6 +1,7 @@
 import 'package:riverflow/src/extractors/extractor.dart';
 import 'package:riverflow/src/extractors/extractor_types.dart';
 
+/// An extractor to get an element from a array
 class ArrayGetExtractor extends Extractor {
   final int index;
 
@@ -11,7 +12,7 @@ class ArrayGetExtractor extends Extractor {
   @override
   List extract(input) {
     final srcInputs = _prepareInputSource(input);
-    int idx = 0;
+    var idx = 0;
     if(index < 0) {
       idx = (srcInputs?.length??0) + index;
     } else {
