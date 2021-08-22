@@ -42,7 +42,7 @@
               "collectors": ["${@href}"]
             },
             {
-              "type": "string_trim"
+              "type": "trim_string"
             }
           ]
         },

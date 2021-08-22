@@ -55,7 +55,7 @@ void main() async {
                   ]
                 },
                 {
-                  "type": "string_trim"
+                  "type": "trim_string"
                 }
               ],
               "collect_as": {

@@ -176,7 +176,7 @@
               ]
             },
             {
-              "type": "string_trim"
+              "type": "trim_string"
             }
           ],
           "collect_as": {
@@ -280,7 +280,7 @@
               "collectors": ["${text()}"]
             },
             {
-              "type": "string_trim"
+              "type": "trim_string"
             }
           ]
         },
@@ -293,7 +293,7 @@
               "collectors": ["${@data-time}"]
             },
             {
-              "type": "string_trim"
+              "type": "trim_string"
             },
             {
               "type": "regex_replace",
@@ -315,7 +315,7 @@
               "collectors": ["${text()}"]
             },
             {
-              "type": "string_trim"
+              "type": "trim_string"
             }
           ],
           "collect_as": {
@@ -380,7 +380,7 @@
               "collectors": ["${text()}"]
             },
             {
-              "type": "string_trim"
+              "type": "trim_string"
             }
           ]
         },
@@ -393,7 +393,7 @@
               "collectors": ["${text()}"]
             },
             {
-              "type": "string_trim"
+              "type": "trim_string"
             }
           ]
         }

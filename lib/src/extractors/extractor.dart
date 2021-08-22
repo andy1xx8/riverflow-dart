@@ -89,9 +89,9 @@ abstract class Extractor {
         return HtmlAttributeEditor.fromJson(json);
       case ExtractorTypes.HTML_TAG_RENAME:
         return HtmlRenameExtractor.fromJson(json);
-      case ExtractorTypes.HTML_TAG_REMOVAL:
+      case ExtractorTypes.HTML_TEXT:
         return HtmlTextExtractor.fromJson(json);
-      case ExtractorTypes.HTML_DECODER:
+      case ExtractorTypes.HTML_DECODE:
         return HtmlDecoderExtractor.fromJson(json);
       case ExtractorTypes.REGEX:
         return RegexExtractor.fromJson(json);
@@ -107,7 +107,7 @@ abstract class Extractor {
         return StringSplitterExtractor.fromJson(json);
       case ExtractorTypes.TRIM:
         return StringTrimExtractor.fromJson(json);
-      case ExtractorTypes.REMOVE_EMPTY:
+      case ExtractorTypes.REMOVE_EMPTY_STRING:
         return StringRemoveEmptyExtractor.fromJson(json);
       case ExtractorTypes.SWITCH_CASE:
         return SwitchCaseExtractor.fromJson(json);

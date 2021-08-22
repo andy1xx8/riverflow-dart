@@ -41,7 +41,7 @@
               "collectors": ["${@value}"]
             },
             {
-              "type": "string_trim"
+              "type": "trim_string"
             }
           ]
         },
@@ -53,7 +53,7 @@
               "collectors": ["${text()}"]
             },
             {
-              "type": "string_trim"
+              "type": "trim_string"
             }
           ]
         }

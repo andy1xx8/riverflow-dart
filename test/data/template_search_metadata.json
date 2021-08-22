@@ -17,7 +17,7 @@
               "collectors": ["${@content}"]
             },
             {
-              "type": "string_trim"
+              "type": "trim_string"
             },
             {
               "type": "regex",

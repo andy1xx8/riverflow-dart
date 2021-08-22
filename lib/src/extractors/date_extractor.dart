@@ -1,7 +1,7 @@
-import 'package:riverflow/src/extractors/extractor.dart';
-import 'package:riverflow/src/extractors/extractor_types.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:intl/intl.dart';
+import 'package:riverflow/src/extractors/extractor.dart';
+import 'package:riverflow/src/extractors/extractor_types.dart';
 
 class DateTimeUtils {
   DateTimeUtils._();
@@ -16,7 +16,7 @@ class DateTimeUtils {
     }
   }
 
-  static DateTime parseInput(dynamic input, List<String> inputFormats) {
+  static DateTime parseInputAsDateTime(dynamic input, List<String> inputFormats) {
     final inputSource = prepareInputSource(input);
     return inputFormats.fold<DateTime>(null, (inputValue, format) {
       try {
@@ -43,7 +43,7 @@ class DateTimeExtractor extends Extractor {
 
   @override
   List extract(input) {
-    final dateTime = DateTimeUtils.parseInput(input, inputFormats);
+    final dateTime = DateTimeUtils.parseInputAsDateTime(input, inputFormats);
     if (dateTime != null) {
       return [DateFormat(outputFormat).format(dateTime)];
     } else {
@@ -76,7 +76,7 @@ class EpochTimeExtractor extends Extractor {
 
   @override
   List extract(input) {
-    final dateTime = DateTimeUtils.parseInput(input, inputFormats);
+    final dateTime = DateTimeUtils.parseInputAsDateTime(input, inputFormats);
     return [dateTime?.millisecondsSinceEpoch].where((element) => element != null).toList();
   }
 

@@ -215,7 +215,7 @@ class HtmlRenameExtractor extends Extractor {
 }
 
 class HtmlDecoderExtractor extends Extractor {
-  HtmlDecoderExtractor() : super(ExtractorTypes.HTML_DECODER);
+  HtmlDecoderExtractor() : super(ExtractorTypes.HTML_DECODE);
 
   @override
   List extract(dynamic input) {
@@ -229,7 +229,7 @@ class HtmlDecoderExtractor extends Extractor {
 }
 
 class HtmlTextExtractor extends Extractor {
-  HtmlTextExtractor() : super(ExtractorTypes.HTML_TAG_REMOVAL);
+  HtmlTextExtractor() : super(ExtractorTypes.HTML_TEXT);
 
   @override
   List extract(dynamic input) {

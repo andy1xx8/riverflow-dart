@@ -31,7 +31,7 @@ class StringTrimExtractor extends Extractor {
 }
 
 class StringRemoveEmptyExtractor extends Extractor {
-  StringRemoveEmptyExtractor() : super(ExtractorTypes.REMOVE_EMPTY);
+  StringRemoveEmptyExtractor() : super(ExtractorTypes.REMOVE_EMPTY_STRING);
 
   @override
   List extract(input) {

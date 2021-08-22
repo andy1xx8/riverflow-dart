@@ -15,7 +15,7 @@
               "collectors": ["${text()}"]
             },
             {
-              "type": "string_trim"
+              "type": "trim_string"
             }
           ]
         }

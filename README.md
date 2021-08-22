@@ -41,20 +41,20 @@ final stage2 = DomStage(
   outputFields: {
     'package_name': FieldSelector(
       extractors: [
-        HtmlExtractor(selector: 'h3[class="packages-title"]', collectors: ['\${text()}']),
+        HtmlExtractor(selector: 'h3[class="packages-title"]', collectors: [r'${text()}']),
         StringTrimExtractor(),
       ],
     ),
     'description': FieldSelector(
       extractors: [
-        HtmlExtractor(selector: 'p[class="packages-description"]', collectors: ['\${text()}'])
+        HtmlExtractor(selector: 'p[class="packages-description"]', collectors: [r'${text()}'])
       ],
     ),
     'likes': FieldSelector(
       extractors: [
         HtmlExtractor(
             selector: 'div[class*="packages-score-like"] *[class="packages-score-value-number"]',
-            collectors: ['\${text()}'])
+            collectors: [r'${text()}'])
       ],
       collectAs: DefaultCollector(CollectTypes.FIRST, OutputTypes.INT, 0),
     ),
@@ -62,7 +62,7 @@ final stage2 = DomStage(
       extractors: [
         HtmlExtractor(
             selector: 'div[class*="packages-score-health"] *[class="packages-score-value-number"]',
-            collectors: ['\${text()}']),
+            collectors: [r'${text()}']),
       ],
       collectAs: DefaultCollector(CollectTypes.FIRST, OutputTypes.INT, 0),
     ),
@@ -70,7 +70,7 @@ final stage2 = DomStage(
       extractors: [
         HtmlExtractor(
             selector: 'div[class*="packages-score-popularity"] *[class="packages-score-value-number"]',
-            collectors: ['\${text()}']),
+            collectors: [r'${text()}']),
       ],
     ),
   },
@@ -136,7 +136,7 @@ final template = Template([stage1, stage2]);
                   ]
                 },
                 {
-                  "type": "string_trim"
+                  "type": "trim_string"
                 }
               ],
               "collect_as": {
