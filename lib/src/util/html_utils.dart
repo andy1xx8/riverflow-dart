@@ -42,28 +42,39 @@ class HtmlUtils {
     return resolvedLink;
   }
 
-  static Map<String, String> findAndParseFormElement(dom.Element root, String formCss) {
-    return parseFormElement(root.querySelector(formCss));
+  static Map<String, String> findForm(dom.Element root, String cssSelector) {
+    return parseForm(root.querySelector(cssSelector));
   }
 
-  static Map<String, String> parseFormElement(dom.Element formElement) {
+  static Map<String, String> parseForm(dom.Element formElement) {
     if (formElement == null) {
       return <String, String>{};
-    } else {
-      final entries = formElement
-          .querySelectorAll('input[name] , textarea[name]')
-          .map<MapEntry<String, String>>((element) {
-            final k = element.attributes['name'].trim();
-            final v =
-                element.attributes.containsKey('value') ? element.attributes['value'].trim() : element.text?.trim();
-
-            return MapEntry<String, String>(k, v);
-          })
-          .where((entry) => entry.value != null)
-          .toList();
-
-      return Map.fromEntries(entries);
     }
+    final entries = formElement
+        .querySelectorAll('input[name] , textarea[name], select[name]')
+        .map<MapEntry<String, String>>((element) => getInputValue(element))
+        .where((entry) => entry.value != null)
+        .toList();
+
+    return Map.fromEntries(entries);
+  }
+
+  static MapEntry<String,String> getInputValue(dom.Element inputElement) {
+    final tagName = inputElement.localName;
+    final name = inputElement.attributes['name'].trim();
+    if(tagName == 'select') {
+      final opElement = [
+        inputElement.querySelector('option[value][selected="selected"]'),
+        inputElement.querySelector('option[value][selected]'),
+        inputElement.querySelector('option[value]')
+      ].firstWhere((element) => element!=null, orElse: () => null );
+      return MapEntry(name, opElement!=null? opElement.attributes['value']: '');
+    } else {
+      final attributes = inputElement.attributes;
+      final value = attributes.containsKey('value') ? attributes['value'].trim() : inputElement.text?.trim();
+      return MapEntry(name, value);
+    }
+
   }
 
   static dom.Element cloneWithName(dom.Element element, String name) {
@@ -80,7 +91,7 @@ class HtmlUtils {
     return shallowClone;
   }
 
-  static dom.Element prepareInputElement(dynamic input) {
+  static dom.Element formatInputElement(dynamic input) {
     if (input is dom.Document) {
       return input.documentElement;
     } else if (input is dom.Element) {

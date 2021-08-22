@@ -2,6 +2,7 @@ class ExtractorTypes {
   static const HTML = 'html';
   static const HTML_INCLUDE = 'html_include';
   static const HTML_EXCLUDE = 'html_exclude';
+  static const HTML_TAG_REMOVAL = 'html_tag_removal';
   static const HTML_CHANGE_ATTRIBUTE = 'html_change_attribute';
   static const HTML_TAG_RENAME = 'html_tag_rename';
   static const HTML_DECODER = 'html_decoder';

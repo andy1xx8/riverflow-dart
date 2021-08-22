@@ -14,7 +14,7 @@ class HtmlExtractor extends Extractor {
 
   @override
   List extract(dynamic input) {
-    return selectMatchingElements(HtmlUtils.prepareInputElement(input))
+    return selectMatchingElements(HtmlUtils.formatInputElement(input))
         .map((element) => HtmlUtils.applyCollectors(element, collectors))
         .where((element) => element != null)
         .toList();
@@ -53,7 +53,7 @@ class HtmlIncludeExtractor extends Extractor {
 
   @override
   List extract(dynamic input) {
-    return selectMatchingElements(HtmlUtils.prepareInputElement(input))
+    return selectMatchingElements(HtmlUtils.formatInputElement(input))
         .where((element) => element != null)
         .toList();
   }
@@ -89,7 +89,7 @@ class HtmlExcludeExtractor extends Extractor {
 
   @override
   List extract(dynamic input) {
-    return selectMatchingElements(HtmlUtils.prepareInputElement(input))
+    return selectMatchingElements(HtmlUtils.formatInputElement(input))
         .where((element) => element != null)
         .toList();
   }
@@ -128,7 +128,7 @@ class HtmlAttributeEditor extends Extractor {
 
   @override
   List extract(dynamic input) {
-    selectMatchingElements(HtmlUtils.prepareInputElement(input)).forEach((element) {
+    selectMatchingElements(HtmlUtils.formatInputElement(input)).forEach((element) {
       if (element.attributes != null) {
         final descAttrs = element.attributes?.keys
                 ?.where((attr) => attr != null)
@@ -183,7 +183,7 @@ class HtmlRenameExtractor extends Extractor {
 
   @override
   List extract(dynamic input) {
-    final root = HtmlUtils.prepareInputElement(input);
+    final root = HtmlUtils.formatInputElement(input);
     selectMatchingElements(root).forEach((element) {
       element.replaceWith(HtmlUtils.cloneWithName(element, renameTo));
     });
@@ -219,11 +219,25 @@ class HtmlDecoderExtractor extends Extractor {
 
   @override
   List extract(dynamic input) {
-    final text = HtmlUtils.prepareInputElement(input).text.trim();
+    final text = HtmlUtils.formatInputElement(input).text.trim();
     return [text];
   }
 
   factory HtmlDecoderExtractor.fromJson(Map<String, dynamic> json) {
     return HtmlDecoderExtractor();
+  }
+}
+
+class HtmlTextExtractor extends Extractor {
+  HtmlTextExtractor() : super(ExtractorTypes.HTML_TAG_REMOVAL);
+
+  @override
+  List extract(dynamic input) {
+    final text = HtmlUtils.formatInputElement(input).text.trim();
+    return [text];
+  }
+
+  factory HtmlTextExtractor.fromJson(Map<String, dynamic> json) {
+    return HtmlTextExtractor();
   }
 }
