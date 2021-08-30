@@ -130,6 +130,8 @@ class HtmlUtils {
     }
 
     switch (name) {
+      case 'parent()':
+        return element?.parent?.outerHtml;
       case 'html()':
         return element.innerHtml;
       case 'outerHtml()':
