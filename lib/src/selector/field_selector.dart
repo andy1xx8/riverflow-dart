@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 
 import 'package:riverflow/src/extractors/collector.dart';
@@ -25,8 +24,6 @@ class OutputTypes {
   static const String DATE = 'date';
 }
 
-
-
 abstract class Selector {
   final String type;
   final bool isFlatten;
@@ -35,46 +32,44 @@ abstract class Selector {
 
   dynamic select(dynamic input, {dynamic defaultValues});
 
-  Map<String,dynamic> toJson() {
+  Map<String, dynamic> toJson() {
     var json = <String, dynamic>{};
     json['type'] = type;
-    json['is_flatten'] = isFlatten??false;
+    json['is_flatten'] = isFlatten;
     return json;
   }
 
-
   factory Selector.fromJson(Map<String, dynamic> json) {
     var type = json['type'];
-    if(type == null) {
+    if (type == null) {
       throw FormatException('This is not a valid json for an selector: ${jsonEncode(json)}');
     }
-    switch(type) {
-      case SelectorTypes.FieldSelector: return FieldSelector.fromJson(json);
+    switch (type) {
+      case SelectorTypes.FieldSelector:
+        return FieldSelector.fromJson(json);
       default:
         throw UnsupportedError('Unknown selector type: $type');
     }
   }
-
 }
 
 class FieldSelector extends Selector {
   final List<Extractor> extractors;
-  final Collector collectAs;
+  final FieldCollector collectAs;
 
   FieldSelector({
-    this.extractors,
-    this.collectAs = const DefaultCollector(CollectTypes.FIRST, OutputTypes.STRING, null),
+    required this.extractors,
+    this.collectAs = const SingleFieldCollector(CollectTypes.FIRST, OutputTypes.STRING, null),
     bool isFlatten = false,
-  }): super(SelectorTypes.FieldSelector,isFlatten??false);
-
+  }) : super(SelectorTypes.FieldSelector, isFlatten);
 
   @override
   dynamic select(dynamic input, {dynamic defaultValues}) {
-    try{
+    try {
       var fields = _extract(input);
       return collectAs.collectOutput(fields);
-    }catch(ex) {
-      if(defaultValues==null) {
+    } catch (ex) {
+      if (defaultValues == null) {
         rethrow;
       }
       return defaultValues;
@@ -82,36 +77,33 @@ class FieldSelector extends Selector {
   }
 
   List _extract(input) {
-    return extractors.fold([input], (List inputs, extractor){
-      if(inputs.isNotEmpty) {
-        return inputs.expand((input) => extractor.extract(input))
-            .where((element) => element!=null)
-            .toList();
+    return extractors.fold([input], (List inputs, extractor) {
+      if (inputs.isNotEmpty) {
+        return inputs.expand((input) => extractor.extract(input)).where((element) => element != null).toList();
       }
       return inputs;
     });
   }
 
-
   factory FieldSelector.fromJson(Map<String, dynamic> json) {
     return FieldSelector(
       extractors: json['extractors'].map<Extractor>((extractorJson) => Extractor.fromJson(extractorJson)).toList(),
-      collectAs: json['collect_as']!=null? DefaultCollector.fromJson(json['collect_as']): DefaultCollector(
-        CollectTypes.FIRST,
-        OutputTypes.STRING,
-        null,
-      ),
-      isFlatten: json['is_flatten']??false,
+      collectAs: json['collect_as'] != null
+          ? SingleFieldCollector.fromJson(json['collect_as'])
+          : SingleFieldCollector(
+              CollectTypes.FIRST,
+              OutputTypes.STRING,
+              null,
+            ),
+      isFlatten: json['is_flatten'] ?? false,
     );
   }
 
   @override
-  Map<String,dynamic> toJson() {
+  Map<String, dynamic> toJson() {
     var json = super.toJson();
     json['extractors'] = extractors.map((e) => e.toJson()).toList();
     json['collect_as'] = collectAs.toJson();
     return json;
   }
-
 }
-

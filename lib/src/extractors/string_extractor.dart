@@ -1,9 +1,9 @@
+import 'package:html/dom.dart' as dom;
 import 'package:riverflow/src/extractors/collector.dart';
 import 'package:riverflow/src/extractors/extractor.dart';
 import 'package:riverflow/src/extractors/extractor_types.dart';
 import 'package:riverflow/src/extractors/filter.dart';
 import 'package:riverflow/src/selector/field_selector.dart';
-import 'package:html/dom.dart' as dom;
 
 class StringTrimExtractor extends Extractor {
   StringTrimExtractor() : super(ExtractorTypes.TRIM);
@@ -11,21 +11,24 @@ class StringTrimExtractor extends Extractor {
   @override
   List extract(input) {
     final inputSource = prepareInputSource(input);
-
-    return [inputSource].where((element) => element != null).map((e) => e?.trim()).toList();
+    if (inputSource == null) {
+      return [];
+    } else {
+      return [inputSource].map((e) => e.trim()).toList();
+    }
   }
 
   factory StringTrimExtractor.fromJson(Map<String, dynamic> json) {
     return StringTrimExtractor();
   }
 
-  static String prepareInputSource(dynamic input) {
+  static String? prepareInputSource(dynamic input) {
     if (input is dom.Element) {
       return input.outerHtml.trim();
     } else if (input is String) {
       return input.trim();
     } else {
-      return input.toString().trim();
+      return input?.toString().trim();
     }
   }
 }
@@ -37,7 +40,9 @@ class StringRemoveEmptyExtractor extends Extractor {
   List extract(input) {
     final inputSource = StringTrimExtractor.prepareInputSource(input);
 
-    return [inputSource].where((element) => element != null).where((element) => element.isNotEmpty).toList();
+    if (inputSource == null) return [];
+
+    return [inputSource].where((element) => element.isNotEmpty).toList();
   }
 
   factory StringRemoveEmptyExtractor.fromJson(Map<String, dynamic> json) {
@@ -49,20 +54,23 @@ class StringSplitterExtractor extends Extractor {
   final String delimiter;
   final String collectType;
 
-  ExtractorCollector collector;
+  late final ArrayFieldCollector collector;
 
   StringSplitterExtractor({
-    this.delimiter,
+    required this.delimiter,
     this.collectType = CollectTypes.FIRST,
   }) : super(ExtractorTypes.STRING_SPLITTER) {
-    collector = ExtractorCollector(collectType, OutputTypes.STRING, null);
+    collector = ArrayFieldCollector(collectType, OutputTypes.STRING, null);
   }
 
   @override
   List extract(input) {
-    final fields = StringTrimExtractor.prepareInputSource(input)
+    final source = StringTrimExtractor.prepareInputSource(input);
+    if(source == null) {
+      return [];
+    }
+    final fields = source
         .split(RegExp(delimiter))
-        .where((element) => element != null)
         .toList();
     return collector.collectOutput(fields);
   }
@@ -111,4 +119,3 @@ class StringFilterExtractor extends Extractor {
     }
   }
 }
-

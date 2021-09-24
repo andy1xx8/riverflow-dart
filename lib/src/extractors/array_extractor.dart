@@ -8,17 +8,17 @@ class ArrayGetExtractor extends Extractor {
   ArrayGetExtractor({
     this.index = 1,
   }) : super(ExtractorTypes.ARRAY_GET);
- 
+
   @override
   List extract(input) {
     final srcInputs = _prepareInputSource(input);
     var idx = 0;
-    if(index < 0) {
-      idx = (srcInputs?.length??0) + index;
+    if (index < 0) {
+      idx = srcInputs.length + index;
     } else {
       idx = index;
     }
-    if (idx != null && idx >= 0 && idx < (srcInputs?.length ?? 0)) {
+    if (idx >= 0 && idx < srcInputs.length) {
       return [srcInputs[idx]];
     } else {
       return [];
@@ -29,7 +29,7 @@ class ArrayGetExtractor extends Extractor {
     if (input is List) {
       return input;
     } else {
-      return [input].where((element) => element != null).toList();
+      return [input].where((element) => element != null).map((e) => e!).toList();
     }
   }
 
@@ -49,13 +49,13 @@ class ArrayRemoveFirstExtractor extends Extractor {
   final int count;
 
   ArrayRemoveFirstExtractor({
-    this.count = 1,
+    required this.count,
   }) : super(ExtractorTypes.ARRAY_REMOVE_FIRST);
 
   @override
   List extract(input) {
     final srcInputs = _prepareInputSource(input);
-    if (count != null && count >= 1 && count <= (srcInputs?.length ?? 0)) {
+    if (count >= 1 && count <= srcInputs.length) {
       return srcInputs.skip(count).toList();
     } else {
       return srcInputs;
@@ -66,7 +66,7 @@ class ArrayRemoveFirstExtractor extends Extractor {
     if (input is List) {
       return input;
     } else {
-      return [input].where((element) => element != null).toList();
+      return [input].where((e) => e != null).map((e) => e!).toList();
     }
   }
 

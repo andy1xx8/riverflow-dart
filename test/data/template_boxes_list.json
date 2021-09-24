@@ -167,7 +167,7 @@
           ],
           "collect_as": {
             "type": "first",
-            "output_type": "string",
+            "data_type": "string",
             "default_value": "0"
           }
         },

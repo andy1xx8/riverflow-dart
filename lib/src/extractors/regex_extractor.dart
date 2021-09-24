@@ -1,15 +1,16 @@
+import 'package:html/dom.dart' as dom;
 import 'package:riverflow/src/extractors/extractor.dart';
 import 'package:riverflow/src/extractors/extractor_types.dart';
-import 'package:html/dom.dart' as dom;
 
 class RegexExtractor extends Extractor {
   final List<String> selectors;
   final String outputGroup;
 
   final List<RegExp> _regExpList = [];
+
   RegexExtractor({
-    this.selectors,
-    this.outputGroup,
+    required this.selectors,
+    required this.outputGroup,
   }) : super(ExtractorTypes.REGEX) {
     selectors.forEach((pattern) {
       _regExpList.add(RegExp(pattern));
@@ -20,13 +21,17 @@ class RegexExtractor extends Extractor {
   List extract(input) {
     final inputSource = RegexExtractor.prepareInputSource(input);
 
-    return _regExpList
-        .map((regExp) => regExp.allMatches(inputSource))
-        .where((matches) => matches.isNotEmpty)
-        .expand((matches) => matches)
-        .map((match) => match.namedGroup(outputGroup))
-        .where((element) => element != null)
-        .toList();
+    if (inputSource == null) {
+      return [];
+    } else {
+      return _regExpList
+          .map((regExp) => regExp.allMatches(inputSource))
+          .where((matches) => matches.isNotEmpty)
+          .expand((matches) => matches)
+          .map((match) => match.namedGroup(outputGroup))
+          .where((element) => element != null)
+          .toList();
+    }
   }
 
   factory RegexExtractor.fromJson(Map<String, dynamic> json) {
@@ -44,13 +49,13 @@ class RegexExtractor extends Extractor {
     return json;
   }
 
-  static String prepareInputSource(dynamic input) {
+  static String? prepareInputSource(dynamic input) {
     if (input is dom.Element) {
       return input.outerHtml.trim();
     } else if (input is String) {
       return input.trim();
     } else {
-      return input.toString().trim();
+      return input?.toString().trim();
     }
   }
 }
@@ -60,17 +65,21 @@ class RegexReplaceExtractor extends Extractor {
   final String replacement;
 
   RegexReplaceExtractor({
-    this.selectors,
-    this.replacement,
+    required this.selectors,
+    required this.replacement,
   }) : super(ExtractorTypes.REGEX_REPLACE);
 
   @override
   List extract(input) {
     final inputSource = RegexExtractor.prepareInputSource(input);
-    final output = selectors.fold(inputSource, (outputResult, selector) {
-      return outputResult.replaceAll(RegExp(selector), replacement);
-    });
-    return [output];
+    if (inputSource == null) {
+      return [];
+    } else {
+      final output = selectors.fold<String>(inputSource, (outputResult, selector) {
+        return outputResult.replaceAll(RegExp(selector), replacement);
+      });
+      return [output];
+    }
   }
 
   factory RegexReplaceExtractor.fromJson(Map<String, dynamic> json) {

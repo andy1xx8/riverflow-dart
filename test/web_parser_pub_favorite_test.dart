@@ -8,7 +8,7 @@ import 'package:test/test.dart';
 void main() {
   var html = '';
   test('Get html from Pub Dev favorites should OK', () async {
-    var response = await http.get('https://pub.dev/flutter/favorites');
+    var response = await http.get(Uri.parse('https://pub.dev/flutter/favorites'));
     expect(response, isNotNull);
     expect(response.body, isNotEmpty);
     html = response.body;
@@ -27,7 +27,7 @@ void main() {
             )
           ],
           isFlatten: true,
-          collectAs: DefaultCollector(CollectTypes.ARRAY, OutputTypes.HTML_ELEMENT, null),
+          collectAs: SingleFieldCollector(CollectTypes.ARRAY, OutputTypes.HTML_ELEMENT, null),
         ),
       },
       excludeMapping: {
@@ -60,7 +60,7 @@ void main() {
                 selector: 'div[class*="packages-score-like"] *[class="packages-score-value-number"]',
                 collectors: ['\${text()}'])
           ],
-          collectAs: DefaultCollector(CollectTypes.FIRST, OutputTypes.INT, 0),
+          collectAs: SingleFieldCollector(CollectTypes.FIRST, OutputTypes.INT, 0),
         ),
         'health': FieldSelector(
           extractors: [
@@ -68,7 +68,7 @@ void main() {
                 selector: 'div[class*="packages-score-health"] *[class="packages-score-value-number"]',
                 collectors: ['\${text()}']),
           ],
-          collectAs: DefaultCollector(CollectTypes.FIRST, OutputTypes.INT, 0),
+          collectAs: SingleFieldCollector(CollectTypes.FIRST, OutputTypes.INT, 0),
         ),
         'popularity': FieldSelector(
           extractors: [
@@ -85,7 +85,7 @@ void main() {
 
     var flow = WebFlow(Template([stage1, stage2]));
 
-    var records = flow.start([html.asDocument('https://pub.dev').documentElement]);
+    var records = flow.start([html.asDocument('https://pub.dev').documentElement!]);
     expect(records, isNotEmpty);
     expect(records[0], isNotNull);
 

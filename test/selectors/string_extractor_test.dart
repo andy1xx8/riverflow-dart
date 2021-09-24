@@ -14,7 +14,7 @@ void main() {
             collectType: CollectTypes.DISTINCT_ARRAY,
           )
         ],
-        collectAs: DefaultCollector(CollectTypes.DISTINCT_ARRAY, OutputTypes.INT, null),
+        collectAs: SingleFieldCollector(CollectTypes.DISTINCT_ARRAY, OutputTypes.INT, null),
       );
 
       final input = '        14,6,18,99,56,30,45,20     ';

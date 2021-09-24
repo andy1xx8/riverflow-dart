@@ -227,7 +227,7 @@
           ],
           "collect_as": {
             "type": "first",
-            "output_type": "string",
+            "data_type": "string",
             "default_value": "0"
           }
         },
@@ -247,7 +247,7 @@
           ],
           "collect_as": {
             "type": "last",
-            "output_type": "string",
+            "data_type": "string",
             "default_value": "0"
           }
         },

@@ -144,9 +144,9 @@ class EqualFilter extends Filter {
     return target == _parseInputAsStr(input);
   }
 
-  static String _parseInputAsStr(dynamic input) {
+  static String? _parseInputAsStr(dynamic input) {
     if (input is dom.Document) {
-      return input.documentElement.outerHtml;
+      return input.documentElement!.outerHtml;
     } else if (input is dom.Element) {
       return input.outerHtml;
     } else if (input is String) {
@@ -181,9 +181,9 @@ class NotEqualFilter extends Filter {
     return !(target == _parseInputAsStr(input));
   }
 
-  static String _parseInputAsStr(dynamic input) {
+  static String? _parseInputAsStr(dynamic input) {
     if (input is dom.Document) {
-      return input.documentElement.outerHtml;
+      return input.documentElement!.outerHtml;
     } else if (input is dom.Element) {
       return input.outerHtml;
     } else if (input is String) {
@@ -218,9 +218,9 @@ class InFilter extends Filter {
     return values.map((target) => target == src).where((element) => element == true).isNotEmpty;
   }
 
-  static String _parseInputAsStr(dynamic input) {
+  static String? _parseInputAsStr(dynamic input) {
     if (input is dom.Document) {
-      return input.documentElement.outerHtml;
+      return input.documentElement!.outerHtml;
     } else if (input is dom.Element) {
       return input.outerHtml;
     } else if (input is String) {
@@ -255,9 +255,9 @@ class NotInFilter extends Filter {
     return values.map((target) => target == src).where((element) => element == true).isEmpty;
   }
 
-  static String _parseInputAsStr(dynamic input) {
+  static String? _parseInputAsStr(dynamic input) {
     if (input is dom.Document) {
-      return input.documentElement.outerHtml;
+      return input.documentElement!.outerHtml;
     } else if (input is dom.Element) {
       return input.outerHtml;
     } else if (input is String) {

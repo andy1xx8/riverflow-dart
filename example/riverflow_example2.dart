@@ -147,10 +147,10 @@ void main() async {
 
   final flow = WebFlow(template);
 
-  final response = await http.get('https://pub.dev/flutter/favorites');
+  final response = await http.get(Uri.parse('https://pub.dev/flutter/favorites'));
   final html = response.body;
 
-  var records = flow.start([html.asDocument('https://pub.dev').documentElement]);
+  var records = flow.start([html.asDocument('https://pub.dev').documentElement!]);
 
   records.forEach((record) {
     print(jsonEncode(record.toJson()));

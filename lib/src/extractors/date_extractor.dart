@@ -16,9 +16,9 @@ class DateTimeUtils {
     }
   }
 
-  static DateTime parseInputAsDateTime(dynamic input, List<String> inputFormats) {
+  static DateTime? parseInputAsDateTime(dynamic input, List<String> inputFormats) {
     final inputSource = prepareInputSource(input);
-    return inputFormats.fold<DateTime>(null, (inputValue, format) {
+    return inputFormats.fold<DateTime?>(null, (inputValue, format) {
       try {
         if (inputValue == null) {
           return DateFormat(format).parse(inputSource);
@@ -33,12 +33,12 @@ class DateTimeUtils {
 }
 
 class DateTimeExtractor extends Extractor {
-  final List<String> inputFormats;
-  final String outputFormat;
+  late final List<String> inputFormats;
+  late final String outputFormat;
 
   DateTimeExtractor({
-    this.inputFormats,
-    this.outputFormat,
+    required this.inputFormats,
+    required this.outputFormat,
   }) : super(ExtractorTypes.DATETIME_CONVERTER);
 
   @override
@@ -68,10 +68,10 @@ class DateTimeExtractor extends Extractor {
 }
 
 class EpochTimeExtractor extends Extractor {
-  final List<String> inputFormats;
+  late final List<String> inputFormats;
 
   EpochTimeExtractor({
-    this.inputFormats,
+    required this.inputFormats,
   }) : super(ExtractorTypes.EPOCH_TIME_CONVERTER);
 
   @override

@@ -1,19 +1,20 @@
+import 'package:html/dom.dart' as dom;
 import 'package:riverflow/src/extractors/extractor.dart';
 import 'package:riverflow/src/extractors/extractor_types.dart';
-import 'package:html/dom.dart' as dom;
 
 class SwitchCaseExtractor extends Extractor {
   final Map<String, String> options;
   final dynamic defaultValue;
 
   SwitchCaseExtractor({
-    this.options,
+    required this.options,
     this.defaultValue,
   }) : super(ExtractorTypes.SWITCH_CASE);
 
   @override
   List extract(input) {
     final inputSource = prepareInputSource(input);
+    if (inputSource == null) return [];
     return [options[inputSource] ?? defaultValue].where((element) => element != null).toList();
   }
 
@@ -32,13 +33,13 @@ class SwitchCaseExtractor extends Extractor {
     return json;
   }
 
-  static String prepareInputSource(dynamic input) {
+  static String? prepareInputSource(dynamic input) {
     if (input is dom.Element) {
       return input.outerHtml.trim();
     } else if (input is String) {
       return input.trim();
     } else {
-      return input.toString().trim();
+      return input?.toString().trim();
     }
   }
 }

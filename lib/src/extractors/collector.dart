@@ -11,12 +11,12 @@ class CollectTypes {
   static const String ARRAY_SIZE = 'array_size';
 }
 
-abstract class Collector<T> {
+abstract class FieldCollector<T> {
   final String type;
   final String dataType;
   final dynamic defaultValue;
 
-  const Collector(this.type, this.dataType, this.defaultValue);
+  const FieldCollector(this.type, this.dataType, this.defaultValue);
 
   T collectOutput(dynamic input);
 
@@ -40,16 +40,16 @@ abstract class Collector<T> {
   }
 
   dynamic _collectFirst(input) {
-    if ((input is List)) {
-      return input?.firstWhere((element) => true, orElse: () => null);
+    if (input is List) {
+      return input.where((element) => element != null).map((e) => e!).firstWhere((element) => true, orElse: () => null);
     } else {
       return input;
     }
   }
 
   dynamic _collectLast(input) {
-    if ((input is List)) {
-      return input?.lastWhere((element) => true, orElse: () => null);
+    if (input is List) {
+      return input.where((element) => element != null).map((e) => e!).lastWhere((element) => true, orElse: () => null);
     } else {
       return input;
     }
@@ -57,7 +57,7 @@ abstract class Collector<T> {
 
   dynamic _collectAsSingle(input) {
     if (input is List) {
-      return input?.join('\n');
+      return input.join('\n');
     } else {
       return input;
     }
@@ -65,7 +65,7 @@ abstract class Collector<T> {
 
   int _collectItemCount(input) {
     if (input is List) {
-      return input?.length ?? 0;
+      return input.length;
     } else {
       return input != null ? 1 : 0;
     }
@@ -103,10 +103,11 @@ abstract class Collector<T> {
     }
   }
 
-  int _parseItemIndex(String type) {
+  int? _parseItemIndex(String type) {
     final regExp = RegExp('(?<index>-?\\d+)');
     if (regExp.hasMatch(type)) {
-      return int.parse(regExp.firstMatch(type).namedGroup('index'));
+      final idxStr = regExp.firstMatch(type)?.namedGroup('index');
+      return int.parse(idxStr!);
     } else {
       return null; // No index pattern was found in the source ( collectAs)
     }
@@ -132,8 +133,8 @@ abstract class Collector<T> {
   }
 }
 
-class DefaultCollector extends Collector<dynamic> {
-  const DefaultCollector(
+class SingleFieldCollector extends FieldCollector<dynamic> {
+  const SingleFieldCollector(
     String collectAs,
     String outputType,
     dynamic defaultValue,
@@ -142,16 +143,20 @@ class DefaultCollector extends Collector<dynamic> {
   @override
   dynamic collectOutput(dynamic input) {
     final output = _collectFromInput(input);
-    return OutputConverter(dataType, defaultValue).convert(output);
+    return DataConverter(dataType, defaultValue).convert(output);
   }
 
-  factory DefaultCollector.fromJson(Map<String, dynamic> json) {
-    return DefaultCollector(json['type'], json['data_type'], json['default_value']);
+  factory SingleFieldCollector.fromJson(Map<String, dynamic> json) {
+    return SingleFieldCollector(
+      json['type'],
+      json['data_type'],
+      json['default_value'],
+    );
   }
 }
 
-class ExtractorCollector extends Collector<List> {
-  const ExtractorCollector(
+class ArrayFieldCollector extends FieldCollector<List> {
+  const ArrayFieldCollector(
     String collectAs,
     String outputType,
     dynamic defaultValue,
@@ -159,7 +164,7 @@ class ExtractorCollector extends Collector<List> {
 
   @override
   List collectOutput(input) {
-    final output = OutputConverter(dataType, defaultValue).convert(_collectFromInput(input));
+    final output = DataConverter(dataType, defaultValue).convert(_collectFromInput(input));
     if (output is List) {
       return output;
     } else {
@@ -167,8 +172,8 @@ class ExtractorCollector extends Collector<List> {
     }
   }
 
-  factory ExtractorCollector.fromJson(Map<String, dynamic> json) {
-    return ExtractorCollector(
+  factory ArrayFieldCollector.fromJson(Map<String, dynamic> json) {
+    return ArrayFieldCollector(
       json['type'],
       json['data_type'],
       json['default_value'],

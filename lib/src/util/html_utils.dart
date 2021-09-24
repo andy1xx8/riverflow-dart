@@ -2,7 +2,6 @@ import 'dart:collection';
 
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' as parser;
-import 'package:url/url.dart';
 
 class HtmlUtils {
   static final Set<String> URL_IGNORED_PATTERNS = <String>{
@@ -35,46 +34,65 @@ class HtmlUtils {
       final isIgnored = URL_IGNORED_PATTERNS.map((p) => RegExp(p).hasMatch(input)).where((x) => x).isNotEmpty;
 
       if (!isIgnored) {
-        final uri = Url.parse(baseUrl);
+        final uri = Uri.parse(baseUrl);
         resolvedLink = uri.resolve(input).toString();
       }
     } catch (_) {}
     return resolvedLink;
   }
 
+  static List<dom.Element> selectMatchingElements(
+    dom.Element? element,
+    String? selector,
+    int maxCount,
+  ) {
+    if (element == null) {
+      return [];
+    }
+    if (selector == null) {
+      return [element];
+    }
+
+    if (maxCount > 1 || maxCount <= 0) {
+      return element.querySelectorAll(selector);
+    } else {
+      return [element.querySelector(selector)].where((element) => element != null).map((e) => e!).toList();
+    }
+  }
+
   static Map<String, String> findForm(dom.Element root, String cssSelector) {
     return parseForm(root.querySelector(cssSelector));
   }
 
-  static Map<String, String> parseForm(dom.Element formElement) {
+  static Map<String, String> parseForm(dom.Element? formElement) {
     if (formElement == null) {
       return <String, String>{};
     }
     final entries = formElement
         .querySelectorAll('input[name] , textarea[name], select[name]')
-        .map<MapEntry<String, String>>((element) => getInputValue(element))
+        .map<MapEntry<String, String?>>((element) => getInputValue(element))
         .where((entry) => entry.value != null)
+        .map((entry) => MapEntry(entry.key, entry.value!))
         .toList();
 
     return Map.fromEntries(entries);
   }
 
-  static MapEntry<String,String> getInputValue(dom.Element inputElement) {
+  static MapEntry<String, String?> getInputValue(dom.Element inputElement) {
     final tagName = inputElement.localName;
-    final name = inputElement.attributes['name'].trim();
-    if(tagName == 'select') {
+    final name = inputElement.attributes['name']!.trim();
+    if (tagName == 'select') {
       final opElement = [
         inputElement.querySelector('option[value][selected="selected"]'),
         inputElement.querySelector('option[value][selected]'),
         inputElement.querySelector('option[value]')
-      ].firstWhere((element) => element!=null, orElse: () => null );
-      return MapEntry(name, opElement!=null? opElement.attributes['value']: '');
+      ].firstWhere((element) => element != null, orElse: () => null);
+      return MapEntry(name, opElement != null ? opElement.attributes['value'] : '');
     } else {
       final attributes = inputElement.attributes;
-      final value = attributes.containsKey('value') ? attributes['value'].trim() : inputElement.text?.trim();
+      final value = attributes.containsKey('value') ? attributes['value']!.trim() : inputElement.text.trim();
       return MapEntry(name, value);
     }
-
   }
 
   static dom.Element cloneWithName(dom.Element element, String name) {
@@ -91,15 +109,15 @@ class HtmlUtils {
     return shallowClone;
   }
 
-  static dom.Element formatInputElement(dynamic input) {
+  static dom.Element? formatInputElement(dynamic input) {
     if (input is dom.Document) {
-      return input.documentElement;
+      return input.documentElement!;
     } else if (input is dom.Element) {
       return input;
     } else if (input is String) {
       final doc = parser.parse(input);
       if (input.contains('<html')) {
-        return doc.documentElement;
+        return doc.documentElement!;
       } else {
         return doc.body;
       }
@@ -108,15 +126,15 @@ class HtmlUtils {
     }
   }
 
-  static String applyCollectors(dom.Element element, List<String> collectors) {
+  static String? applyCollectors(dom.Element element, List<String> collectors) {
     return collectors
         .map((collector) => applyCollector(element, collector))
         .where((element) => element != null)
-        .where((element) => element.isNotEmpty)
+        .where((element) => element!.isNotEmpty)
         .firstWhere((element) => true, orElse: () => null);
   }
 
-  static String applyCollector(dom.Element element, String collector) {
+  static String? applyCollector(dom.Element element, String collector) {
     final matcher = RegExp('\\\${(@)?(?<name>.+)}').firstMatch(collector);
 
     if (matcher == null) {
@@ -131,7 +149,7 @@ class HtmlUtils {
 
     switch (name) {
       case 'parent()':
-        return element?.parent?.outerHtml;
+        return element.parent?.outerHtml;
       case 'html()':
         return element.innerHtml;
       case 'outerHtml()':

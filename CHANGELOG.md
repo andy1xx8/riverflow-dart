@@ -1,3 +1,7 @@
+## 1.1.1
+
+- Support Null Safety
+
 ## 1.0.5
 
 - Add API docs

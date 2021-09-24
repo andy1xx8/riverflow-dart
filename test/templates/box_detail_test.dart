@@ -10,7 +10,7 @@ import 'template_tester.dart';
 void main() {
   final boxUrl = 'https://voz.vn/f/68/page-14';
 
-  Document dom;
+  late final Document dom;
 
   test('load html', () {
     dom = f68_page14.asDocument('https://voz.vn');
@@ -55,6 +55,10 @@ void main() {
   test('Parse sub boxes should Empty', () async {
     final tester = TemplateTester('test/data/template_boxes_list.json', boxUrl);
     final records = await tester.testDocument(dom);
+
+    records.forEach((element) {
+      print(element);
+    });
     expect(records, isEmpty);
   });
 

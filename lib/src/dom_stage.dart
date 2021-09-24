@@ -5,11 +5,11 @@ import 'package:riverflow/src/stage.dart';
 class DomStage extends Stage {
   final Map<String, String> inputMapping;
   final Map<String, Selector> outputFields;
-  final Set<String> excludeMapping;
+  final Set<String>? excludeMapping;
 
   DomStage({
-    this.inputMapping,
-    this.outputFields,
+    required this.inputMapping,
+    required this.outputFields,
     this.excludeMapping,
   }) : super(StageTypes.DOM);
 
@@ -30,7 +30,7 @@ class DomStage extends Stage {
   }
 
   Set<String> _getFlattenFields() {
-    return outputFields.entries.where((e) => e.value.isFlatten ?? false).map((e) => e.key).toSet();
+    return outputFields.entries.where((e) => e.value.isFlatten).map((e) => e.key).toSet();
   }
 
   Record _parseOutput(Map<String, dynamic> inputMapping) {
@@ -50,10 +50,10 @@ class DomStage extends Stage {
   }
 
   List<Record> _expandRecords(Record record, Set<String> flattenFields) {
-    final fieldName = flattenFields.firstWhere((fieldName) => true, orElse: () => null);
-    if (fieldName == null) {
+    if (flattenFields.isEmpty) {
       return [record];
     } else {
+      final fieldName = flattenFields.first;
       final flattenValues = record.getField(fieldName);
       if (flattenValues is List && fieldName.isNotEmpty) {
         return flattenValues.map((e) => record.mergeWith(Record.from(fieldName, e))).toList();
@@ -64,11 +64,11 @@ class DomStage extends Stage {
   }
 
   List<Record> _excludeFields(List<Record> records) {
-    if (excludeMapping == null || excludeMapping.isEmpty) {
+    if (excludeMapping == null || excludeMapping!.isEmpty) {
       return records;
     } else {
       final excludeFields =
-          excludeMapping.map((path) => path.toFieldName()).where((element) => element != null).toList();
+          excludeMapping!.map((path) => path.toFieldName()).where((element) => element != null).map((e) => e!).toList();
       return records.map((record) => record.removeFields(excludeFields)).toList();
     }
   }

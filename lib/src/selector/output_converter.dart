@@ -2,11 +2,11 @@ import 'package:riverflow/src/selector/field_selector.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' as parser;
 
-class OutputConverter {
+class DataConverter {
   final String outputType;
   final dynamic defaultValue;
 
-  OutputConverter(this.outputType, this.defaultValue);
+  DataConverter(this.outputType, this.defaultValue);
 
   dynamic convert(dynamic input) {
     var output;
@@ -49,7 +49,7 @@ class OutputConverter {
     }
   }
 
-  bool _convertToBool(dynamic input) {
+  bool? _convertToBool(dynamic input) {
     if (input == null) {
       return null;
     } else if (input is bool) {
@@ -57,13 +57,13 @@ class OutputConverter {
     } else if (input is int) {
       return input > 0;
     } else if (input is String) {
-      return input?.toLowerCase() == 'true';
+      return input.toLowerCase() == 'true';
     } else {
       throw FormatException('$input is not a valid bool value');
     }
   }
 
-  int _convertToInt(input) {
+  int? _convertToInt(input) {
     if (input == null) {
       return null;
     } else if (input is bool) {
@@ -81,7 +81,7 @@ class OutputConverter {
     }
   }
 
-  double _convertToDouble(dynamic input) {
+  double? _convertToDouble(dynamic input) {
     if (input == null) {
       return null;
     } else if (input is bool) {
@@ -99,7 +99,7 @@ class OutputConverter {
     }
   }
 
-  String _convertToString(dynamic input) {
+  String? _convertToString(dynamic input) {
     if (input == null) {
       return null;
     } else if (input is bool) {
@@ -113,11 +113,11 @@ class OutputConverter {
     } else if (input is dom.Element) {
       return input.outerHtml.trim();
     } else {
-      return input.toString();
+      return input?.toString();
     }
   }
 
-  DateTime _convertToDate(dynamic input) {
+  DateTime? _convertToDate(dynamic input) {
     if (input == null) {
       return null;
     } else if (input is int) {
@@ -129,7 +129,7 @@ class OutputConverter {
     }
   }
 
-  dom.Element _convertToHtmlElement(dynamic input) {
+  dom.Element? _convertToHtmlElement(dynamic input) {
     if (input == null) {
       return null;
     } else if (input is String) {

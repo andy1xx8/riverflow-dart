@@ -21,46 +21,15 @@ class Record extends Field {
     }
   }
 
-  dynamic path(String path) => getField(path.toFieldName());
-
   bool contains(String field) => _fields.containsKey(field);
+
+  dynamic path(String path) {
+    final f = path.toFieldName();
+    return f != null ? getField(f) : null;
+  }
 
   dynamic get(String field) {
     return _fields[field];
-  }
-
-  bool getBool(String field, {bool defaultValue}) {
-    return get(field) ?? defaultValue;
-  }
-
-  int getInt(String field, {int defaultValue}) {
-    return get(field) ?? defaultValue;
-  }
-
-  double getDouble(String field, {double defaultValue}) {
-    return get(field) ?? defaultValue;
-  }
-
-  String getString(String field, {String defaultValue}) {
-    return get(field) ?? defaultValue;
-  }
-
-  Element getElement(String field) {
-    return get(field) as Element;
-  }
-
-  List getList(String field) {
-    return (getField(field) as List);
-  }
-
-  List<String> getListString(String field, {List<String> defaultValue}) {
-    return (getList(field)?.map<String>((e) => e as String)?.toList()) ??
-        defaultValue;
-  }
-
-  List<Element> getElements(String field, {List<Element> defaultValue}) {
-    return (getList(field)?.map<Element>((e) => e as Element)?.toList()) ??
-        defaultValue;
   }
 
   dynamic getField(String fieldName) => _fields[fieldName];
@@ -73,17 +42,51 @@ class Record extends Field {
     return _fields.keys.toList();
   }
 
+  bool? getBool(String field, {bool? defaultValue}) {
+    return get(field) ?? defaultValue;
+  }
+
+  int? getInt(String field, {int? defaultValue}) {
+    return get(field) ?? defaultValue;
+  }
+
+  double? getDouble(String field, {double? defaultValue}) {
+    return get(field) ?? defaultValue;
+  }
+
+  String? getString(String field, {String? defaultValue}) {
+    return get(field) ?? defaultValue;
+  }
+
+  Element? getElement(String field) {
+    return get(field) as Element;
+  }
+
+  List? getList(String field) {
+    return (getField(field) as List);
+  }
+
+  List<String>? getListString(String field, {List<String>? defaultValue}) {
+    final rawList = getList(field);
+
+    return (rawList != null) ? rawList.map<String>((e) => e as String).toList() : defaultValue;
+  }
+
+  List<Element>? getElements(String field, {List<Element>? defaultValue}) {
+    final rawList = getList(field);
+
+    return (rawList != null) ? rawList.map<Element>((e) => e as Element).toList() : defaultValue;
+  }
+
   Record addField(String fieldName, dynamic fieldValue) {
     _fields[fieldName] = fieldValue;
     return this;
   }
 
   Record removeFields(List<String> excludeFields) {
-    if (excludeFields != null) {
-      excludeFields.forEach((fieldName) {
-        _fields.remove(fieldName);
-      });
-    }
+    excludeFields.forEach((fieldName) {
+      _fields.remove(fieldName);
+    });
     return this;
   }
 
@@ -95,13 +98,13 @@ class Record extends Field {
   Map<String, dynamic> toJson() {
     dynamic toValue(dynamic value) {
       if (value is List) {
-        return value?.map((e) => toValue(e))?.toList();
+        return value.map((e) => toValue(e)).toList();
       } else if (value is Document) {
-        return value?.outerHtml;
+        return value.outerHtml;
       } else if (value is Element) {
-        return value?.outerHtml;
+        return value.outerHtml;
       } else if (value is DateTime) {
-        return value?.toString();
+        return value.toString();
       } else {
         return value;
       }
@@ -126,7 +129,7 @@ class Record extends Field {
 }
 
 extension PathToField on String {
-  String toFieldName() {
+  String? toFieldName() {
     var regExp = RegExp('/(?<field_name>.+)');
     return regExp
         .allMatches(this)
