@@ -2,7 +2,7 @@ import 'package:riverflow/src/extractors/regex_extractor.dart';
 import 'package:test/test.dart';
 
 void main() {
-  group('Regex Extractor tests', () {
+  group('Regex Extractor', () {
     var html = '''
       <div class="mini-list-item">
         <a class="mini-list-item-title" href="/packages/device_info"><h3>device_info</h3></a>
@@ -52,7 +52,7 @@ void main() {
   });
 
 
-  group('Regex replace Extractor tests', () {
+  group('Regex Replace Extractor', () {
 
     test('Replace package href should OK', () {
       var html = 'href="/packages/device_info"';
@@ -89,4 +89,41 @@ void main() {
 
 
   });
+
+  group('Regex Match Extractor', () {
+
+    test('Regex match should OK', () {
+      var html = 'a1=v1,b2=v2,c=12';
+      var extractor = RegexMatchExtractor(
+        selectors: [
+          'b2=v2'
+        ]
+      );
+
+      var result = extractor.extract(html);
+
+      expect(result, isNotNull);
+      expect(result, isNotEmpty);
+      expect(result, ['a1=v1,b2=v2,c=12']);
+    });
+
+
+    test('Regex match should not OK', () {
+      var html = 'a1=v1,b2=v2,c=12';
+      var extractor = RegexMatchExtractor(
+        selectors: [
+          'b2=v22'
+        ]
+      );
+
+      var result = extractor.extract(html);
+
+      expect(result, isNotNull);
+      expect(result, isEmpty);
+      expect(result, []);
+    });
+
+  });
+
+
 }

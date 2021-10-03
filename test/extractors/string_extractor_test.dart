@@ -1,3 +1,4 @@
+import 'package:riverflow/riverflow.dart';
 import 'package:riverflow/src/extractors/collector.dart';
 import 'package:riverflow/src/extractors/string_extractor.dart';
 import 'package:test/test.dart';
@@ -66,5 +67,8 @@ void main() {
       expect(result, isNotEmpty);
       expect(result, ['a1=v1', 'b2=v2', 'c=12']);
     });
+
+
+
   });
 }
