@@ -9,6 +9,7 @@ class ExtractorTypes {
   static const HTML_TAG_RENAME = 'html_tag_rename';
   static const JSON = 'json';
   static const REGEX = 'regex';
+  static const REGEX_MATCH = 'regex_match';
   static const REGEX_REPLACE = 'regex_replace';
   static const DATETIME_CONVERTER = 'datetime_converter';
   static const DATETIME_FORMATTER = 'datetime_formatter';

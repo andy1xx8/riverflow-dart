@@ -256,6 +256,7 @@ class HtmlTextExtractor extends Extractor {
   }
 }
 
+//TODO: Remove this when there is native support from HTML Parser library. 
 class HtmlContainsExtractor extends Extractor {
   final String selector;
   final String containSelector;

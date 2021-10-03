@@ -97,3 +97,51 @@ class RegexReplaceExtractor extends Extractor {
     return json;
   }
 }
+
+class RegexMatchExtractor extends Extractor {
+  final List<String> selectors;
+  final List<RegExp> _regExpList = [];
+
+  RegexMatchExtractor({
+    required this.selectors,
+  }) : super(ExtractorTypes.REGEX_MATCH) {
+    selectors.forEach((pattern) {
+      _regExpList.add(RegExp(pattern));
+    });
+  }
+
+  @override
+  List extract(input) {
+    final inputSource = RegexExtractor.prepareInputSource(input);
+
+    if (inputSource == null) {
+      return [];
+    } else {
+      final hasMatch = _regExpList.where((regExp) => regExp.hasMatch(inputSource)).isNotEmpty;
+      return hasMatch ? [inputSource] : [];
+    }
+  }
+
+  factory RegexMatchExtractor.fromJson(Map<String, dynamic> json) {
+    return RegexMatchExtractor(
+      selectors: json['selectors'].map<String>((e) => e as String).toList(),
+    );
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    final json = super.toJson();
+    json['selectors'] = selectors;
+    return json;
+  }
+
+  static String? prepareInputSource(dynamic input) {
+    if (input is dom.Element) {
+      return input.outerHtml.trim();
+    } else if (input is String) {
+      return input.trim();
+    } else {
+      return input?.toString().trim();
+    }
+  }
+}

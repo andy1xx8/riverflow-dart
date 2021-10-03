@@ -101,6 +101,8 @@ abstract class Extractor {
         return StringFilterExtractor.fromJson(json);
       case ExtractorTypes.REGEX_REPLACE:
         return RegexReplaceExtractor.fromJson(json);
+      case ExtractorTypes.REGEX_MATCH:
+        return RegexMatchExtractor.fromJson(json);
       case ExtractorTypes.DATETIME_CONVERTER:
         return DateTimeExtractor.fromJson(json);
       case ExtractorTypes.EPOCH_TIME_CONVERTER:
