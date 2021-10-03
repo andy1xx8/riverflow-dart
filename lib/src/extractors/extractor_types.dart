@@ -1,6 +1,7 @@
 class ExtractorTypes {
   static const HTML = 'html';
   static const HTML_INCLUDE = 'html_include';
+  static const HTML_CONTAINS = 'html_contains';
   static const HTML_EXCLUDE = 'html_exclude';
   static const HTML_TEXT = 'html_text';  
   static const HTML_DECODE = 'html_decode';

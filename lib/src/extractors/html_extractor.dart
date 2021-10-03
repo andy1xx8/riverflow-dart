@@ -255,3 +255,49 @@ class HtmlTextExtractor extends Extractor {
     return HtmlTextExtractor();
   }
 }
+
+class HtmlContainsExtractor extends Extractor {
+  final String selector;
+  final String containSelector;
+  final int maxCount;
+
+  HtmlContainsExtractor({
+    required this.selector,
+    required this.containSelector,
+    this.maxCount = 0,
+  }) : super(ExtractorTypes.HTML_CONTAINS);
+
+  @override
+  List extract(dynamic input) {
+    final matchingElement = HtmlUtils.selectMatchingElements(
+      HtmlUtils.formatInputElement(input),
+      selector,
+      maxCount,
+    );
+
+    return matchingElement.where((element) {
+      return HtmlUtils.selectMatchingElements(
+        element,
+        containSelector,
+        1,
+      ).isNotEmpty;
+    }).toList();
+  }
+
+  factory HtmlContainsExtractor.fromJson(Map<String, dynamic> json) {
+    return HtmlContainsExtractor(
+      selector: json['selector'].toString(),
+      containSelector: json['contain_selector'].toString(),
+      maxCount: json.containsKey('max_count') ? (json['max_count'] as int) : 0,
+    );
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    final json = super.toJson();
+    json['selector'] = selector;
+    json['contain_selector'] = containSelector;
+    json['max_count'] = maxCount;
+    return json;
+  }
+}

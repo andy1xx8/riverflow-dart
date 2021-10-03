@@ -85,6 +85,8 @@ abstract class Extractor {
         return HtmlIncludeExtractor.fromJson(json);
       case ExtractorTypes.HTML_EXCLUDE:
         return HtmlExcludeExtractor.fromJson(json);
+      case ExtractorTypes.HTML_CONTAINS:
+        return HtmlContainsExtractor.fromJson(json);
       case ExtractorTypes.HTML_CHANGE_ATTRIBUTE:
         return HtmlAttributeEditor.fromJson(json);
       case ExtractorTypes.HTML_TAG_RENAME:
