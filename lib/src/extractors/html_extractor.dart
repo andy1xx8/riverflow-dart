@@ -157,7 +157,7 @@ class HtmlAttributeEditor extends Extractor {
     if (element == null) return [];
     if (selector == null) return [element];
 
-    return (maxCount > 1)
+    return (maxCount > 1 || maxCount <= 0)
         ? element.querySelectorAll(selector!)
         : [element.querySelector(selector!)].where((element) => element != null).map((e) => e!).toList();
   }
@@ -205,7 +205,7 @@ class HtmlRenameExtractor extends Extractor {
     if (element == null) return [];
     if (selector == null) return [element];
 
-    return (maxCount > 1)
+    return (maxCount > 1  || maxCount <= 0)
         ? element.querySelectorAll(selector!)
         : [element.querySelector(selector!)].where((element) => element != null).map((e) => e!).toList();
   }
