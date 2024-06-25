@@ -1,17 +1,16 @@
 import 'package:dolumns/dolumns.dart';
 
-
 class MeasureValue {
   static final List<String> HEADERS = [
-    "No",
-    "Name",
-    "Total Req",
-    "Pending Req",
-    "Total Exec Time",
-    "Last Exec Time",
-    "Highest Exec Time",
-    "Request Rate (req/sec)",
-    "Avg Time/Request (millis/request)",
+    'No',
+    'Name',
+    'Total Req',
+    'Pending Req',
+    'Total Exec Time',
+    'Last Exec Time',
+    'Highest Exec Time',
+    'Request Rate (req/sec)',
+    'Avg Time/Request (millis/request)',
   ];
 
   final String funcName;
@@ -33,53 +32,53 @@ class MeasureValue {
   });
 
   void start() {
-    this.totalPendingHits += 1;
+    totalPendingHits += 1;
   }
 
   void stop(int durationInNs) {
-    this.totalPendingHits -= 1;
-    this.totalHits += 1;
-    this.totalDurationNs += durationInNs;
-    this.lastDurationNs = durationInNs;
+    totalPendingHits -= 1;
+    totalHits += 1;
+    totalDurationNs += durationInNs;
+    lastDurationNs = durationInNs;
 
-    if (this.lowestDurationNs == -1 || this.lowestDurationNs > durationInNs) {
-      this.lowestDurationNs = durationInNs;
+    if (lowestDurationNs == -1 || lowestDurationNs > durationInNs) {
+      lowestDurationNs = durationInNs;
     }
 
-    if (this.highestDurationNs == -1 || this.highestDurationNs < durationInNs) {
-      this.highestDurationNs = durationInNs;
+    if (highestDurationNs == -1 || highestDurationNs < durationInNs) {
+      highestDurationNs = durationInNs;
     }
   }
 
   String getTotalDurationAsMs() {
-    return (this.totalDurationNs ~/ 1000000).toString();
+    return (totalDurationNs ~/ 1000000).toString();
   }
 
   String getLastDurationAsMs() {
-    return (this.lastDurationNs / 1000000).toStringAsFixed(4);
+    return (lastDurationNs / 1000000).toStringAsFixed(4);
   }
 
   String getLowestDurationAsMs() {
-    return (this.lowestDurationNs / 1000000).toStringAsFixed(4);
+    return (lowestDurationNs / 1000000).toStringAsFixed(4);
   }
 
   String getHighestDurationAsMs() {
-    return (this.highestDurationNs / 1000000).toStringAsFixed(4);
+    return (highestDurationNs / 1000000).toStringAsFixed(4);
   }
 
   String getRequestRate() {
-    final durationAsMs = this.totalDurationNs ~/ 1000000;
+    final durationAsMs = totalDurationNs ~/ 1000000;
 
     if (durationAsMs > 0) {
-      return ((this.totalHits * 1000) / durationAsMs).toStringAsFixed(4);
+      return ((totalHits * 1000) / durationAsMs).toStringAsFixed(4);
     } else {
       return '';
     }
   }
 
   String getAvgTimePerRequest() {
-    if (this.totalHits > 0) {
-      final durationAsMs = this.totalDurationNs / 1000000;
+    if (totalHits > 0) {
+      final durationAsMs = totalDurationNs / 1000000;
       return (durationAsMs / totalHits).toStringAsFixed(4);
     } else {
       return '';
@@ -88,13 +87,13 @@ class MeasureValue {
 }
 
 class ProfilerService {
-  final Map<String, MeasureValue> _measureMap = new Map();
+  final Map<String, MeasureValue> _measureMap = {};
 
   MeasureValue getMeasureValue(String funcName) {
-    var measureValue = this._measureMap[funcName];
+    var measureValue = _measureMap[funcName];
     if (measureValue == null) {
       measureValue = MeasureValue(funcName);
-      this._measureMap[funcName] = measureValue;
+      _measureMap[funcName] = measureValue;
     }
 
     return measureValue;
@@ -109,7 +108,7 @@ class ProfilerService {
   }
 
   List<MeasureValue> getReports() {
-    final records = this._measureMap.values.toList();
+    final records = _measureMap.values.toList();
     records.sort((a, b) {
       return a.funcName.compareTo(b.funcName);
     });

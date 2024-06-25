@@ -1,10 +1,6 @@
 import 'dart:convert';
 
 import 'package:riverflow/riverflow.dart';
-import 'package:riverflow/src/dom_stage.dart';
-import 'package:riverflow/src/extractors/html_extractor.dart';
-import 'package:riverflow/src/extractors/regex_extractor.dart';
-import 'package:riverflow/src/selector/field_selector.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -19,22 +15,30 @@ void main() {
       outputFields: {
         'package_name': FieldSelector(
           extractors: [
-            HtmlExtractor(selector: 'a[class="mini-list-item-title"]', collectors: ['\${text()}'])
+            HtmlExtractor(
+                selector: 'a[class="mini-list-item-title"]',
+                collectors: ['\${text()}'])
           ],
         ),
         'description': FieldSelector(
           extractors: [
-            HtmlExtractor(selector: 'p[class="mini-list-item-description"]', collectors: ['\${text()}'])
+            HtmlExtractor(
+                selector: 'p[class="mini-list-item-description"]',
+                collectors: ['\${text()}'])
           ],
         ),
         'publisher': FieldSelector(
           extractors: [
-            HtmlExtractor(selector: 'a[class="publisher-link"]', collectors: ['\${text()}'])
+            HtmlExtractor(
+                selector: 'a[class="publisher-link"]',
+                collectors: ['\${text()}'])
           ],
         ),
         'publisher_link': FieldSelector(
           extractors: [
-            HtmlExtractor(selector: 'a[class="publisher-link"]', collectors: ['\${@href}']),
+            HtmlExtractor(
+                selector: 'a[class="publisher-link"]',
+                collectors: ['\${@href}']),
             RegexReplaceExtractor(
               selectors: ['^'],
               replacement: 'https://pub.dev',

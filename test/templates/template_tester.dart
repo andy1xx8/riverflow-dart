@@ -4,7 +4,6 @@ import 'package:html/dom.dart';
 import 'package:http/http.dart' as http;
 import 'package:resource_portable/resource.dart';
 import 'package:riverflow/riverflow.dart';
-import 'package:riverflow/src/util/extensions.dart';
 import 'package:test/test.dart';
 
 class TemplateTester {
@@ -36,7 +35,8 @@ class TemplateTester {
 
   Future _loadTemplate() async {
     if (template == null) {
-      final json = await Resource(templateFile).readAsString(encoding: Encoding.getByName('utf-8'));
+      final json = await Resource(templateFile)
+          .readAsString(encoding: Encoding.getByName('utf-8'));
 
       template = Template.fromJson(jsonDecode(json));
     }
