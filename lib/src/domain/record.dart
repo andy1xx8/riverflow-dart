@@ -14,11 +14,9 @@ class Record extends Field {
   }
 
   Record.fromMap(Map<String, dynamic> data) {
-    if (data != null) {
-      data.forEach((key, value) {
-        _fields[key] = value;
-      });
-    }
+    data.forEach((key, value) {
+      _fields[key] = value;
+    });
   }
 
   bool contains(String field) => _fields.containsKey(field);
@@ -69,13 +67,17 @@ class Record extends Field {
   List<String>? getListString(String field, {List<String>? defaultValue}) {
     final rawList = getList(field);
 
-    return (rawList != null) ? rawList.map<String>((e) => e as String).toList() : defaultValue;
+    return (rawList != null)
+        ? rawList.map<String>((e) => e as String).toList()
+        : defaultValue;
   }
 
   List<Element>? getElements(String field, {List<Element>? defaultValue}) {
     final rawList = getList(field);
 
-    return (rawList != null) ? rawList.map<Element>((e) => e as Element).toList() : defaultValue;
+    return (rawList != null)
+        ? rawList.map<Element>((e) => e as Element).toList()
+        : defaultValue;
   }
 
   Record addField(String fieldName, dynamic fieldValue) {
