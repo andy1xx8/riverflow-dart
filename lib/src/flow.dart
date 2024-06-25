@@ -1,7 +1,5 @@
 import 'package:html/dom.dart' as dom;
 import 'package:riverflow/riverflow.dart';
-import 'package:riverflow/src/domain/record.dart';
-import 'package:riverflow/src/stage.dart';
 
 abstract class Flow {
   final List<Stage> stages;
