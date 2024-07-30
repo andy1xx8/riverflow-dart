@@ -10,11 +10,11 @@ environment:
 dependencies:
   dolumns: ^2.0.1
   html: ^0.15.4
-  intl: ^0.18.1
-  timezone: ^0.9.3
+  intl: ^0.19.0
+  timezone: ^0.9.4
 
 dev_dependencies:
-  http: ^1.2.1
-  pedantic_mono: ^1.26.0
+  http: ^1.2.2
+  pedantic_mono: ^1.27.0
   resource_portable: ^3.1.0
-  test: ^1.25.7
+  test: ^1.25.8
